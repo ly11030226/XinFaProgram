@@ -41,9 +41,9 @@
 
     <!-- 引导页 -->
     <string name="help_question">如何用手机操作广告机的轮播内容</string>
-    <string name="first_step">第一步：局域网内用手机浏览器扫描左侧二维码或者连接路由扫描中间二维码，下载用于控制轮播的apk，</string>
+    <string name="first_step">第一步：在能上网的前提下扫描下面二维码，下载用于控制轮播的apk</string>
     <string name="second_step">第二步：安装apk并且运行</string>
-    <string name="third_step">第三步：apk中点击扫描二维码图标，扫描右侧二维码</string>
+    <string name="third_step">第三步：apk中点击扫描二维码图标，扫描下面二维码</string>
     <string name="forth_step">第四步：弹框中同意与广告机连接</string>
     <string name="fifth_step">第五步：连接成功后广告机等待用户控制端上传新的轮播文件</string>
     <string name="upload_no_empty">请上传非空文件</string>

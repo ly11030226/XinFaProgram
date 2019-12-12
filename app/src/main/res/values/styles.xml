@@ -40,6 +40,7 @@
 
 
     <style name="help_text_style">
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:layout_width">match_parent</item>
