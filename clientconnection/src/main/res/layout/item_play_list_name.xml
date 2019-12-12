@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:id="@+id/rl_list_name"
+        android:layout_width="120dp"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/normal_line"/>
+
+        <TextView
+            android:id="@+id/tv_list_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/view_line"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text=""
+            android:textColor="@color/blue_main"
+            tools:text="默认"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_add"
+        android:layout_width="68dp"
+        android:layout_height="match_parent"
+        android:paddingLeft="4dp">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/add_play_list"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

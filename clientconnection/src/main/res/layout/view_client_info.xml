@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:background="@color/device_bg"></View>
+
+    <RelativeLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="160dp">
+
+
+        <!-- 扫一扫 -->
+        <ImageView
+            android:id="@+id/iv_scanning"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:src="@mipmap/rich_scan"
+            android:visibility="visible"/>
+
+        <!-- 左边头像标识 -->
+        <ImageView
+            android:id="@+id/iv_img"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="16dp"
+            android:src="@mipmap/device_ip_logo"/>
+
+
+        <!-- 显示本机ip -->
+        <LinearLayout
+            android:id="@+id/ll_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_toRightOf="@+id/iv_img"
+            android:paddingLeft="20dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tv_ip"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:id="@+id/tv_ip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="8dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    tools:text="192.168.0.186"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <!-- 显示已连接设备的ip -->
+        <TextView
+            android:id="@+id/tv_connected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_info"
+            android:layout_toRightOf="@id/iv_img"
+            android:paddingLeft="48dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:visibility="invisible"
+            android:textColor="@color/blue_main"
+            android:textSize="12sp"
+            tools:text="已连接 192.168.1.112"/>
+
+
+        <!-- 开始搜索 -->
+        <LinearLayout
+            android:id="@+id/ll_start_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_connected"
+            android:layout_toRightOf="@+id/iv_img"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingTop="6dp"
+            android:visibility="visible">
+            <TextView
+                android:id="@+id/btn_start_search"
+                style="@style/Device_Button"
+                android:text="@string/btn_start_search"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_connected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_connected"
+            android:layout_toRightOf="@+id/iv_img"
+            android:paddingLeft="16dp"
+            android:paddingTop="6dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btn_stop_search"
+                    style="@style/Device_Button"
+                    android:text="@string/close_conn"/>
+
+
+                <TextView
+                    android:id="@+id/btn_manager_res"
+                    style="@style/Device_Button"
+                    android:layout_marginLeft="16dp"
+                    android:text="@string/manage_res"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:background="@color/device_bg"></View>
+
+
+</LinearLayout>

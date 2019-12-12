@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:id="@+id/ll_all"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <com.marshalchen.ultimaterecyclerview.swipe.SwipeLayout
+        android:id="@+id/recyclerview_swipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/ll_execute"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <!-- 编辑布局 -->
+            <LinearLayout
+                android:id="@+id/ll_edit"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_item_choice"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/move_up"/>
+
+            </LinearLayout>
+
+            <!-- 下载布局 -->
+            <LinearLayout
+                android:id="@+id/ll_download"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_item_choice"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/move_down"/>
+
+            </LinearLayout>
+
+            <!-- 刪除布局 -->
+            <LinearLayout
+                android:id="@+id/ll_delete"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/selector_item_choice"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@mipmap/item_delete"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <!-- 显示主体内容 -->
+        <LinearLayout
+            android:id="@+id/ll_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_item_choice"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- 图像 -->
+                    <ImageView
+                        android:id="@+id/iv_title"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:src="@mipmap/logo_video"/>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="20dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="20dp">
+
+                        <!-- 名字 -->
+                        <LinearLayout
+                            android:id="@+id/ll_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/res_name"
+                                android:textColor="@color/device_text"
+                                android:textSize="20sp"/>
+
+                            <TextView
+                                android:id="@+id/tv_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="middle"
+                                android:maxLines="2"
+                                android:paddingLeft="8dp"
+                                android:text=""
+                                android:textColor="@color/device_text_content"
+                                android:textSize="20sp"
+                                tools:text="Img"/>
+
+
+                        </LinearLayout>
+
+                        <!-- 大小等 -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/res_size"
+                                android:textColor="@color/device_text_content"
+                                android:textSize="17sp"/>
+
+                            <TextView
+                                android:id="@+id/tv_size"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/device_text_content"
+                                android:textSize="17sp"
+                                tools:text="1m"/>
+
+
+                            <TextView
+                                android:id="@+id/tv_time_remind"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="32dp"
+                                android:text="@string/res_time"
+                                android:textColor="@color/device_text_content"
+                                android:textSize="17sp"/>
+
+
+                            <TextView
+                                android:id="@+id/tv_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/device_text_content"
+                                android:textSize="17sp"
+                                tools:text="1分16秒"/>
+                        </LinearLayout>
+
+                        <!-- 停留时长 -->
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/res_stay"
+                                android:textColor="@color/device_text_content"
+                                android:textSize="17sp"/>
+
+                            <TextView
+                                android:id="@+id/tv_stay"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="8dp"
+                                android:textColor="@color/device_text_content"
+                                android:textSize="17sp"
+                                tools:text="10秒"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/normal_line"
+                    />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </com.marshalchen.ultimaterecyclerview.swipe.SwipeLayout>
+
+
+</LinearLayout>

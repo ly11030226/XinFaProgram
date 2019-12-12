@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="display_image_duration">
+        <item>默认(10)</item>
+        <item>4</item>
+        <item>8</item>
+        <item>12</item>
+    </string-array>
+
+    <string-array name="display_video_duration">
+        <item>默认(与视频长度相同)</item>
+        <item>4</item>
+        <item>8</item>
+        <item>12</item>
+    </string-array>
+
+    <string-array name="setting">
+        <item>编辑视图停留时长</item>
+        <item>从广告机下载视图</item>
+    </string-array>
+
+</resources>

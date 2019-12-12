@@ -1,0 +1,75 @@
+<resources>
+    <string name="app_name">视图轮播助手</string>
+
+    <!-- Dialog -->
+    <string name="auth_contact_permission_remind">请设置允许开通【存储】权限,否则程序无法正常启用</string>
+    <string name="auth_contact_permission_not_ask">请设置允许开通【存储】权限,否则程序无法正常启用</string>
+    <string name="auth_contact_permission_do_open">去开通</string>
+    <string name="auth_contact_permission_open">开通</string>
+    <string name="auth_contact_permission_cancel">取消</string>
+
+
+    <string name="yes">确定</string>
+    <string name="soft_update_title">软件更新</string>
+    <string name="soft_update_info">检测到新版本，立即更新吗</string>
+    <string name="soft_update_updatebtn">更新</string>
+    <string name="soft_update_later">稍后更新</string>
+    <string name="soft_updating">正在更新</string>
+    <string name="soft_update_cancel">取消</string>
+
+
+    <string name="aby_label">自动安装服务</string>
+    <string name="aby_desc">开启本服务后，在安装应用的过程中会辅助点击相应按钮，实现自动安装和启动应用，省去频繁手动点击。</string>
+
+    <string name="aby_set">打开系统设置：\n1.在辅助功能(无障碍)中，找到并勾选\"自动安装服务\"；\n2.在安全中，找到并勾选\"未知来源\"。</string>
+    <string name="aby_setting_title">\"辅助功能(无障碍)\"设置</string>
+    <string name="aby_setting_msg">找到并勾选\"自动安装服务\"。</string>
+    <string name="unknow_setting_title">\"未知来源\"设置</string>
+    <string name="unknow_setting_msg">找到并勾选\"未知来源\"。</string>
+
+    <string name="report_time">发布时间</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <!--Dialog-->
+    <string name="custom_dialog_main_title">扫描二维码</string>
+    <string name="custom_dialog_left_title">局域网下载Apk</string>
+    <string name="custom_dialog_right_title">连接广告机</string>
+    <string name="custom_dialog_middle_title">Http下载Apk</string>
+
+    <!-- 引导页 -->
+    <string name="help_question">如何用手机操作广告机的轮播内容</string>
+    <string name="first_step">第一步：局域网内用手机浏览器扫描左侧二维码或者连接路由扫描中间二维码，下载用于控制轮播的apk，</string>
+    <string name="second_step">第二步：安装apk并且运行</string>
+    <string name="third_step">第三步：apk中点击扫描二维码图标，扫描右侧二维码</string>
+    <string name="forth_step">第四步：弹框中同意与广告机连接</string>
+    <string name="fifth_step">第五步：连接成功后广告机等待用户控制端上传新的轮播文件</string>
+    <string name="upload_no_empty">请上传非空文件</string>
+
+    <!-- remind -->
+    <string name="loading">正在加载...</string>
+
+    <string name="connect_success">连接成功</string>
+    <string name="connect_fail">连接失败</string>
+
+    <string name="start_search">正在开启...</string>
+    <string name="start_search_success">开启成功</string>
+    <string name="stop_search">正在关闭...</string>
+    <string name="stop_search_success">关闭成功</string>
+
+
+    <string name="file_is_empty">目前没有视图展示，请在控制端添加</string>
+
+
+    <string name="dialog_title">提示</string>
+    <string name="dialog_commit">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_do_not">不开通</string>
+    <string name="dialog_confirm">确认</string>
+    <string name="no_permission">请设置允许开通【存储】和【使用相机】权限,否则无法添加新资源</string>
+    <string name="exit_app">再按一次退出程序</string>
+
+
+</resources>

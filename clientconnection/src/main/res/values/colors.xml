@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+
+    <color name="blue_main">#FF1E88E5</color>
+
+    <color name="blue_main_press">#591E88E5</color>
+    <color name="btn_search_normal">#FF1E88E5</color>
+    <color name="btn_search_press">#591E88E5</color>
+    <color name="zxing_line_color">#FF66CD00</color>
+    <color name="translucent">#00000000</color>
+    <color name="normal_line">#F7F7F7</color>
+    <color name="white_bg_press">#E2E2E2</color>
+    <color name="device_name">#696969</color>
+
+    <color name="device_bg">#F2F2F2</color>
+    <color name="device_text">#4c4c4c</color>
+
+    <color name="play_list_name">#696969</color>
+    <color name="play_list_line">#E2E2E2</color>
+
+    <color name="device_text_content">#808080</color>
+
+</resources>

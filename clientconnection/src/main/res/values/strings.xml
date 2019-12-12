@@ -1,0 +1,74 @@
+<resources>
+    <string name="app_name">信发控制端</string>
+
+    <string name="btn_start_search">开始搜索</string>
+    <string name="btn_stop_search">停止搜索</string>
+    <string name="tv_ip">本机IP:</string>
+    <string name="close_conn">关闭连接</string>
+    <string name="manage_res">管理资源</string>
+
+    <string name="dialog_title">提示</string>
+    <string name="dialog_commit">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="qrcode_text">将二维码/条码放入框内，即可自动扫描</string>
+    <string name="dialog_message">您确定与IP地址是【%s】终端通信吗?</string>
+    <string name="dialog_do_not">不开通</string>
+    <string name="dialog_confirm">确认</string>
+    <string name="dialog_dis_conn_device">您确定与该终端设备断开连接吗?</string>
+
+    <string name="res_name">名称</string>
+    <string name="res_size">大小:</string>
+    <string name="res_time">播放时长:</string>
+    <string name="res_stay">停留:</string>
+
+    <string name="device_title">设备</string>
+    <string name="res_title">资源列表</string>
+    <string name="res_is_empty">展示端还没有任何显示内容，请添加新的资源</string>
+    <string name="res_no_permission">请设置允许开通【存储】和【使用相机】权限,否则无法添加新资源</string>
+
+    <string name="button_commit">确定</string>
+    <string name="error_gif">x or y bound size should be at least %1$dpx and file size should be no more than %2$sM</string>
+    <string name="search_end">搜索结束</string>
+    <string name="socket_connect_success">连接成功</string>
+
+    <string name="pb_connect_now">正在连接...</string>
+
+    <string name="user_other_software">请用其它扫一扫软件</string>
+
+    <string name="device_name">设备名称：</string>
+    <string name="device_ip">IP地址：</string>
+    <string name="device_port">端口号：</string>
+    <string name="device_port_symbol">-</string>
+    <string name="device_os">操作系统：</string>
+
+    <string name="video">视频</string>
+    <string name="image">图片</string>
+    <string name="playlist">播放列表</string>
+    <string name="is_end">已经是最底端了</string>
+    <string name="is_start">已经是最顶端了</string>
+    <string name="setting">设置</string>
+    <string name="download_remind">正在下载，请稍后...</string>
+    <string name="do_upload">上传</string>
+
+    <string name="do_save">保存</string>
+    <string name="video_or_image_is_empty">广告机还没有%s资源</string>
+    <string name="file_have_limit">注：请不要选择视频大于100M，图片大于5M的文件</string>
+
+    <string name="is_searching">正在搜索...</string>
+    <string name="is_uploading">正在上传...</string>
+
+    <!--Error-->
+    <string name="search_time_out">无应答设备</string>
+    <string name="data_is_error">数据有误</string>
+    <string name="bind_fail">端口已绑定，稍后再搜索</string>
+    <string name="search_ing">正在搜索，请稍后</string>
+    <string name="socket_is_not_connected">连接展示端失败</string>
+    <string name="conn_device">已经连接设备</string>
+    <string name="server_socket_close">与展示端断开连接</string>
+    <string name="server_has_no_res">广告机不存在该文件</string>
+    <string name="download_res_is_finish">文件已下载，保存路径为【根目录/SZTY/FileDownloader】</string>
+    <string name="json_txt_is_null">没有展示文件</string>
+    <string name="res_is_exist">文件已存在</string>
+
+
+</resources>

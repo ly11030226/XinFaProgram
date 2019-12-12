@@ -1,0 +1,51 @@
+ext {
+
+    android = [
+            compileSdkVersion: 29,
+            buildToolsVersion: "29.0.2",
+            minSdkVersion    : 21,
+            targetSdkVersion : 29,
+            versionCode      : 100,
+            versionName      : "1.0.0",
+            applicationId    : "com.ads.xinfa"
+    ]
+
+
+    dependencies = [
+            "constraintlayout"       :     'androidx.constraintlayout:constraintlayout:1.1.3',
+            "legacy-support-v4"      :     'androidx.legacy:legacy-support-v4:1.0.0-beta01',
+            "junit"                  :     'junit:junit:4.12',
+            "runner"                 :     'androidx.test:runner:1.1.0-alpha4',
+            "espresso-core"          :     'androidx.test.espresso:espresso-core:3.1.0-alpha4',
+            "multidex"               :     'androidx.multidex:multidex:2.0.0',
+            "butterknife"            :     'com.jakewharton:butterknife:10.1.0',
+            "butterknife-compiler"   :     'com.jakewharton:butterknife-compiler:10.1.0',
+            "filedownloader"         :     'com.liulishuo.filedownloader:library:1.7.6',
+            "material-dialogs"       :     'com.afollestad.material-dialogs:core:0.9.6.0',
+            "glide"                  :     'com.github.bumptech.glide:glide:4.9.0',
+            "banner"                 :     'com.youth.banner:banner:1.4.10',
+            "annotation"             :     'androidx.annotation:annotation:1.0.2',
+            "appcompat"              :     'androidx.appcompat:appcompat:1.1.0-alpha02',
+            "retrofit2"              :     'com.squareup.retrofit2:retrofit:2.5.0',
+            "adapter-rxjava2"        :     'com.squareup.retrofit2:adapter-rxjava2:2.5.0',
+            "converter-gson"         :     'com.squareup.retrofit2:converter-gson:2.5.0',
+            "okhttp3"                :     'com.squareup.okhttp3:okhttp:3.14.0',
+            "rxandroid"              :     'io.reactivex.rxjava2:rxandroid:2.1.1',
+            "rxjava"                 :     'io.reactivex.rxjava2:rxjava:2.2.8',
+            "logging-interceptor"    :     'com.squareup.okhttp3:logging-interceptor:3.7.0',
+            "gson"                   :     'com.google.code.gson:gson:2.8.5',
+            "permissionsdispatcher"  :     'org.permissionsdispatcher:permissionsdispatcher:4.3.1',
+            "permissionsdispatcher-processor"
+                                     : 'org' +
+                    '.permissionsdispatcher:permissionsdispatcher-processor:4.3.1',
+            "GSYVideoPlayer"         :     'com.shuyu:GSYVideoPlayer:7.0.1',
+            "filedownloader"         :     'com.liulishuo.filedownloader:library:1.7.6',
+            "zxing-android-embedded" :     'com.journeyapps:zxing-android-embedded:3.6.0',
+            "zxing"                  :     'com.google.zxing:core:3.3.0',
+            "glide:compiler"         :     'com.github.bumptech.glide:compiler:4.9.0',
+            "MaterialDesign"         :     'com.github.navasmdc:MaterialDesign:1.5@aar',
+            "library-circular"       :     'com.github.castorflex' +
+                    '.smoothprogressbar:library-circular:1.3.0',
+            "ultimaterecyclerview"   :     'com.marshalchen.ultimaterecyclerview:library:0.9.0'
+    ]
+}
