@@ -145,6 +145,11 @@ public abstract class BaseHandleSocketData{
                     }
                 }
             }
+
+            @Override
+            public String getPsd() {
+                return RemoteConst.CONNECT_PSD;
+            }
         });
     }
 

@@ -22,6 +22,7 @@ public class Constant {
     public static final int FLAG_JUMP_TO_RES_CONTROL = 0X11;
     public static final int FLAG_CLOSE_PROGRESSBAR = 0x23;
 
+
     public static final String ACTION_FINISH_ACTIVITY = "ACTION_FINISH_ACTIVITY";
     public static final String ACTION_SHOW_SETTING_FROM_RESMANAGER ="ACTION_SHOW_SETTING_FROM_RESMANAGER";
     public static final String ACTION_SHOW_SETTING_FROM_RESLIST ="ACTION_SHOW_SETTING_FROM_RESLIST";

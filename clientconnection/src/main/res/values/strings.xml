@@ -69,6 +69,9 @@
     <string name="download_res_is_finish">文件已下载，保存路径为【根目录/SZTY/FileDownloader】</string>
     <string name="json_txt_is_null">没有展示文件</string>
     <string name="res_is_exist">文件已存在</string>
+    <string name="connect_psd">请输入连接机器的密码</string>
+    <string name="psd_is_error">密码输入有误</string>
+    <string name="connect_time_out">连接广告机超时，请重试</string>
 
 
 </resources>

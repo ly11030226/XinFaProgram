@@ -62,4 +62,24 @@ public class RemoteConst {
 	 * 连接机器的密码
 	 */
 	public static String CONNECT_PSD;
+
+	/**
+	 * 需要获取机器的密码（request）
+	 */
+	public static final int REQUEST_PSD_FROM_SERVER = 11;
+	/**
+	 * 拿到的机器的密码（response）
+	 */
+	public static final int RESPONSE_PSD_TO_CLIENT = 12;
+
+	/**
+	 * 请求展示端的数据列表
+	 */
+	public static final int REQUEST_DATA_LIST = 1;
+
+	/**
+	 * 获取到密码通知打开dialog
+	 */
+	public static final int GET_CONNECTPSD_SHOW_DIALOG = 0X31;
+
 }

@@ -6,6 +6,7 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 
+import com.gongw.remote.RemoteConst;
 import com.gongw.remote.Tools;
 import com.gongw.remote.communication.CommunicationKey;
 import com.gongw.remote.communication.Transmission;
@@ -24,6 +25,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * 广告机端接收发送消息的管理者
+ * @author Ly
+ */
 public class ServerByteSocketManager {
     private static final String TAG = "ServerByteSocketManager";
     public ServerByteSocketManager.RequestListener listener;
@@ -264,6 +269,17 @@ public class ServerByteSocketManager {
                             }
                         }
                         break;
+                    case RemoteConst.REQUEST_PSD_FROM_SERVER:
+                        if (listener!=null) {
+                            String psd = listener.getPsd();
+                            byte[] bPsd = ServerByteSocketManager.getInstance().makeBytes(
+                                    psd,
+                                    RemoteConst.RESPONSE_PSD_TO_CLIENT);
+                            Log.i(TAG,"connect psd ... "+psd);
+                            dos.write(bPsd);
+                            dos.flush();
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -446,6 +462,7 @@ public class ServerByteSocketManager {
         void updateList(String json);
         void transferring(String path,String progress);
         void transferSuccess(String path);
+        String getPsd();
     }
     public void closeSerVer(){
         if (serverSocketRunnable!=null) {

@@ -8,7 +8,9 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -133,6 +135,10 @@ public class MainActivity extends BaseActivity {
                         myDialog.hideDialog();
                         ToastUtils.showToast(MainActivity.this,BaseUtils.getStringByResouceId(R.string.json_txt_is_null));
                         break;
+                    case RemoteConst.GET_CONNECTPSD_SHOW_DIALOG: //获取了连接广告机的密码
+                        String psd = (String) msg.obj;
+                        openConnDialog(psd);
+                        break;
                     default:
                         break;
                 }
@@ -141,6 +147,45 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+
+    /**
+     * 打开连接机器的弹框
+     * @param psd
+     */
+    private void openConnDialog(String psd) {
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_connect_psd,null);
+        EditText et = view.findViewById(R.id.et_psd);
+        new MaterialDialog.Builder(this)
+                .title(getString(R.string.connect_psd))
+                .customView(view, false)
+                .positiveText("确定")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        checkPsdIsCorrect(et.getText().toString().trim(),psd);
+                    }
+                })
+                .show();
+    }
+    /**
+     * 检查密码是否正确
+     * @param inputStr
+     * @param psd
+     */
+    private void checkPsdIsCorrect(String inputStr, String psd) {
+        if (!ClientByteSocketManager.connect) {
+            Toast.makeText(MainActivity.this, R.string.connect_time_out, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (psd.equals(inputStr)) {
+            byte[] b = new byte[5];
+            b[0] = RemoteConst.REQUEST_DATA_LIST;
+            ClientByteSocketManager.getInstance().sendMsg(b);
+        }else{
+            Toast.makeText(MainActivity.this, R.string.psd_is_error, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 
     @Override
@@ -153,7 +198,6 @@ public class MainActivity extends BaseActivity {
             initProgressBar();
             initRecyclerView();
             addListener();
-
         } catch (Exception e) {
             e.printStackTrace();
         }

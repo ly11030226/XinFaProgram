@@ -25,6 +25,10 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+/**
+ * 手机端接受发送消息的管理者
+ * @author Ly
+ */
 public class ClientByteSocketManager {
     private static final String TAG = "ClientByteSocketManager";
     private static final int FLAG_SEND_STRING = 444;
@@ -37,6 +41,9 @@ public class ClientByteSocketManager {
     private static final int FIFTH = 5;
     private static final int SIXTH = 6;
     private static final int EIGHTH = 8;
+
+    public static boolean connect = false;
+
 
     public static String currentDownloadName;
 
@@ -137,11 +144,12 @@ public class ClientByteSocketManager {
             socket = new Socket();
             try {
                 socket.connect(new InetSocketAddress(ip, RemoteConst.COMMAND_RECEIVE_PORT));
+                connect = true;
                 dos = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
                 dis = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
                 initSendHandle();
                 byte[] b = new byte[5];
-                b[0] = FIRST;
+                b[0] = RemoteConst.REQUEST_PSD_FROM_SERVER;
                 sendMsg(b);
                 if (writeHandlerThread == null) {
                     writeHandlerThread = new WriteHandlerThread("write file");
@@ -149,7 +157,7 @@ public class ClientByteSocketManager {
                 writeHandlerThread.start();
                 writeHandler = new WriteHandler(writeHandlerThread.getLooper(), dos);
                 receiveMsgFromByte();
-                close();
+//                close();
                 if (uiHandler != null) {
                     uiHandler.sendEmptyMessage(RemoteConst.FLAG_SERVER_CLOSE);
                 }
@@ -214,6 +222,14 @@ public class ClientByteSocketManager {
                             fos.close();
                             downloafFileHandler.sendEmptyMessage(CommunicationKey.FLAG_DOWNLOAD_FILE_IS_FINISH);
                         }
+                        break;
+                    case RemoteConst.RESPONSE_PSD_TO_CLIENT:
+                        String psd = getResultString(buffer);
+                        Log.i(TAG,"psd ... "+psd);
+                        Message m = uiHandler.obtainMessage();
+                        m.what = RemoteConst.GET_CONNECTPSD_SHOW_DIALOG;
+                        m.obj = psd;
+                        uiHandler.sendMessage(m);
                         break;
                     default:
                         break;
@@ -330,7 +346,7 @@ public class ClientByteSocketManager {
                     socket.close();
                     socket = null;
                 }
-
+                connect = false;
             } catch (Exception e) {
                 e.printStackTrace();
             }
