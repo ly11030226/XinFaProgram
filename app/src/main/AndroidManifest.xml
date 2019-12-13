@@ -49,7 +49,7 @@
         <activity
             android:name=".ui.help.HelpActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme">
         </activity>
         <activity
@@ -67,7 +67,7 @@
         <activity
             android:name=".ui.lanConnection.LanConnectionHostActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme">
         </activity>
         <activity
@@ -86,7 +86,7 @@
         <activity
             android:name=".ui.welcome.CustomWelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -99,7 +99,7 @@
         <activity
             android:name=".ui.welcome.XinMiWelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme">
         </activity>
 

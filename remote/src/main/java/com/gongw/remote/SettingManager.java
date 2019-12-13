@@ -1,6 +1,6 @@
 package com.gongw.remote;
 
-import android.os.Environment;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -9,11 +9,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * 本地配置文件config.txt
+ * @author Ly
+ */
 public class SettingManager {
     private static final String TAG = "SettingManager";
-    public static final String CONFIG_DIR = Environment.getExternalStorageDirectory().getPath()
-            +File.separator+
-            "SZTY"+File.separator+"Config"+File.separator;
     public static final String SETTING_TXT = "setting.txt";
     public static final String DEFAULT_SETTING = "url-http://www.sztiye.com/download/xinfa_control_1.0.0.apk|udpPort-8100|serverPort-60001|floatViewOpen-true|password-123456";
 
@@ -30,8 +31,11 @@ public class SettingManager {
         return instance;
     }
 
-    public void writeConfigTxt() throws IOException {
-        File file = new File(CONFIG_DIR+SETTING_TXT);
+    public void writeConfigTxt(Context context) throws IOException {
+        File f = context.getExternalFilesDir("szty/Config");
+        //  /storage/emulated/0/Android/data/com.ads.xinfa/files/config
+        String path = f.getAbsolutePath();
+        File file = new File(f,SETTING_TXT);
         if (!file.exists()) {
             file.createNewFile();
             byte[] b = DEFAULT_SETTING.getBytes("UTF-8");

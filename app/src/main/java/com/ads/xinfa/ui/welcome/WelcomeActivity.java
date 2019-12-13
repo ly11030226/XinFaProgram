@@ -13,8 +13,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.gongw.remote.SettingManager;
 
-import java.io.File;
-
 import io.reactivex.annotations.NonNull;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -50,22 +48,7 @@ public abstract class WelcomeActivity extends BaseActivity {
     public abstract void doNext();
 
     private void createFile() {
-        MyLogger.d(TAG, "create file");
-        String path = FileManager.TEMP_DIR;
-        File file = new File(path);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        String downloadPath = FileManager.Resource_DIR;
-        file = new File(downloadPath);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        String setting = FileManager.CONFIG_DIR;
-        file = new File(setting);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
+        FileManager.init(WelcomeActivity.this);
     }
 
 
@@ -101,7 +84,7 @@ public abstract class WelcomeActivity extends BaseActivity {
         try {
             MyLogger.i(TAG, "checkPermission");
             isCanWrite = true;
-            SettingManager.getInstance().writeConfigTxt();
+            SettingManager.getInstance().writeConfigTxt(WelcomeActivity.this);
             doNext();
         } catch (Exception e) {
             e.printStackTrace();

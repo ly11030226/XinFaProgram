@@ -1,11 +1,15 @@
 package com.ads.xinfa.base;
 
-import android.os.Environment;
+import android.content.Context;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 
+/**
+ *
+ * @author Ly
+ */
 public class FileManager {
     private static final String TAG = "FileManager";
     public static final String XML_DATA = "data.xml";
@@ -13,31 +17,29 @@ public class FileManager {
     public static final String TEST_XML_CONFIG = "test_Config.xml";
     public static final String TEST_XML_DATA = "test_data.xml";
     public static final String JSON_DATA = "json.txt";
+    private static String basePath;
 
-    public static final String screenShotPath = Environment
-            .getExternalStorageDirectory().getPath()
-            + File.separator
-            + "SZTY" + File.separator + "ScreenShot" + ".jpg";
-    public static final String XML_DIR = Environment
-            .getExternalStorageDirectory().getPath()
-            + File.separator
-            + "SZTY" + File.separator;
-    public static final String Resource_DIR = Environment
-            .getExternalStorageDirectory().getPath()
-            + File.separator
-            + "SZTY" + File.separator + "FileDownloader" + File.separator;
+    public static void init(Context context) {
+        if (context != null) {
+            MyLogger.d(TAG, "create file");
+            File file = context.getExternalFilesDir("szty");
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            basePath = file.getAbsolutePath();
+            screenShotPath = basePath + File.separator + "ScreenShot.jpg";
+            XML_DIR = basePath + File.separator + "Xml" + File.separator;
+            Resource_DIR = basePath + File.separator + "FileDownloader" + File.separator;
+            TEMP_DIR = basePath + File.separator + "Temp" + File.separator;
+            UPLOAD_DIR = basePath + File.separator + "Upload" + File.separator;
+        }
+    }
 
-    public static final String TEMP_DIR = Environment
-            .getExternalStorageDirectory().getPath()
-            + File.separator
-            + "SZTY" + File.separator + "Temp" + File.separator;
-    public static final String UPLOAD_DIR = Environment.getExternalStorageDirectory().getPath()
-            +File.separator+
-            "SZTY"+File.separator+"Upload"+File.separator;
-
-    public static final String CONFIG_DIR = Environment.getExternalStorageDirectory().getPath()
-            +File.separator+
-            "SZTY"+File.separator+"Config"+File.separator;
+    public static String screenShotPath;
+    public static String XML_DIR;
+    public static String Resource_DIR;
+    public static String TEMP_DIR;
+    public static String UPLOAD_DIR;
 
     public static String loadXMLFromSDCard(String fileName){
         String result = null;

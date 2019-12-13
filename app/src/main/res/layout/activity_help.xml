@@ -1,165 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/help_bg"
-    android:orientation="vertical">
+    android:background="@mipmap/scan_code_bg_1">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
+    <!-- 标题 -->
+    <LinearLayout
+        android:id="@+id/ll_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/right_arrow" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/right_arrow" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/right_arrow" />
+
+        <TextView
+            android:id="@+id/tv_remind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:text="@string/help_question"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_left"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/cl_right"
+        app:layout_constraintTop_toBottomOf="@+id/ll_question">
+
+        <TextView
+            android:id="@+id/tv_first"
+            style="@style/help_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="48dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp"
+            android:text="@string/first_step"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <!-- http 下载的二维码 -->
         <LinearLayout
-            android:id="@+id/ll_back_up"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/ll_download_apk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:visibility="visible">
-            <!-- 问题 -->
-            <LinearLayout
-                android:id="@+id/ll_question"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingTop="100dp"
-                android:paddingRight="30dp"
-                android:paddingBottom="28dp">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_first">
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@mipmap/right_arrow" />
+            <ImageView
+                android:id="@+id/iv_http"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:src="@mipmap/ic_launcher" />
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@mipmap/right_arrow" />
+            <TextView
+                style="@style/help_text_style"
+                android:layout_width="wrap_content"
+                android:paddingTop="8dp"
+                android:text="@string/custom_dialog_middle_title"
+                android:textSize="10sp" />
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@mipmap/right_arrow" />
-
-                <TextView
-                    android:id="@+id/tv_remind"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="16dp"
-                    android:text="@string/help_question"
-                    android:textColor="@color/white"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-
-            <!-- 具体步骤说明 -->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp">
-
-
-                    <TextView
-                        style="@style/help_text_style"
-                        android:text="@string/first_step" />
-
-                    <!-- http 下载的二维码 -->
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="16dp">
-
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="32dp"
-                            android:gravity="center_horizontal"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/iv_http"
-                                android:layout_width="140dp"
-                                android:layout_height="140dp"
-                                android:src="@mipmap/ic_launcher" />
-
-                            <TextView
-                                style="@style/help_text_style"
-                                android:layout_width="wrap_content"
-                                android:paddingTop="16dp"
-                                android:text="@string/custom_dialog_middle_title"
-                                android:textSize="15sp" />
-
-                        </LinearLayout>
-                    </LinearLayout>
-
-
-                    <TextView
-                        style="@style/help_text_style"
-                        android:paddingTop="16dp"
-                        android:text="@string/second_step" />
-
-                    <TextView
-                        style="@style/help_text_style"
-                        android:paddingTop="16dp"
-                        android:text="@string/third_step" />
-
-                    <!-- 连接广告机 二维码 -->
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="32dp"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="16dp">
-
-                        <ImageView
-                            android:id="@+id/iv_connect"
-                            android:layout_width="140dp"
-                            android:layout_height="140dp"
-                            android:src="@mipmap/ic_launcher" />
-
-                        <TextView
-                            style="@style/help_text_style"
-                            android:layout_width="wrap_content"
-                            android:paddingTop="16dp"
-                            android:text="@string/custom_dialog_right_title"
-                            android:textSize="15sp" />
-                    </LinearLayout>
-
-
-                    <TextView
-                        style="@style/help_text_style"
-                        android:paddingTop="16dp"
-                        android:text="@string/forth_step" />
-
-                    <TextView
-                        style="@style/help_text_style"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="100dp"
-                        android:text="@string/fifth_step" />
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
 
 
-    </ScrollView>
+        <TextView
+            style="@style/help_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="48dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp"
+            android:text="@string/second_step"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_download_apk" />
 
-</LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_right"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintLeft_toRightOf="@+id/cl_left"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_question">
+
+        <TextView
+            android:id="@+id/tv_third"
+            style="@style/help_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="48dp"
+            android:paddingBottom="16dp"
+            android:text="@string/third_step"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 连接广告机 二维码 -->
+        <LinearLayout
+            android:id="@+id/ll_connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_third">
+
+            <ImageView
+                android:id="@+id/iv_connect"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                style="@style/help_text_style"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:text="@string/custom_dialog_right_title"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_forth"
+            style="@style/help_text_style"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="48dp"
+            android:paddingBottom="8dp"
+            android:text="@string/forth_step"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_connect" />
+
+        <TextView
+            style="@style/help_text_style"
+            android:paddingLeft="16dp"
+            android:paddingRight="48dp"
+            android:text="@string/fifth_step"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_forth" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
