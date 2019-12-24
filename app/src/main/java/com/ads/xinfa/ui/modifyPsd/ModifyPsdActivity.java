@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import com.ads.utillibrary.utils.ToastUtils;
 import com.ads.xinfa.R;
 import com.ads.xinfa.base.BaseActivity;
-import com.ads.xinfa.base.Constant;
 import com.gongw.remote.RemoteConst;
 import com.gongw.remote.SettingManager;
 
@@ -117,11 +116,11 @@ public class ModifyPsdActivity extends BaseActivity{
             if (modifyPsdActivity!=null) {
                 try {
                     modifyPsdActivity.rlBg.setVisibility(View.GONE);
-                    if (msg.what == Constant.MODIFY_PSD_SUCCESS) {
+                    if (msg.what == RemoteConst.MODIFY_PSD_SUCCESS) {
                         ToastUtils.showToast(modifyPsdActivity,"修改密码成功");
                         Thread.sleep(500);
                         modifyPsdActivity.finish();
-                    }else if (msg.what == Constant.MODIFY_PSD_FAIL) {
+                    }else if (msg.what == RemoteConst.MODIFY_PSD_FAIL) {
                         ToastUtils.showToast(modifyPsdActivity,"修改密码失败");
                     }
                 } catch (Exception e) {
