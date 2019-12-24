@@ -3,6 +3,10 @@ package com.ads.xinfa.base;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * 基类Activity
+ * @author Ly
+ */
 public class BaseActivity extends AppCompatActivity  {
     private static final String TAG = "BaseActivity";
     protected  boolean isActive;

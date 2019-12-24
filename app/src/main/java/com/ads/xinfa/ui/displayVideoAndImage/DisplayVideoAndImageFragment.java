@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -246,6 +247,19 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
                     dialog = new CustomMaterialDialog(getActivity());
                 }
                 dialog.show();
+
+                View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_left_area,null);
+                ImageView ivSet = view.findViewById(R.id.iv_setting);
+                ivSet.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                new MaterialDialog.Builder(getActivity())
+                        .customView(view,false)
+                        .show();
+
             }
         });
     }

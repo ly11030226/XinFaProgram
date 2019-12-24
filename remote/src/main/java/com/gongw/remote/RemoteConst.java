@@ -82,4 +82,13 @@ public class RemoteConst {
 	 */
 	public static final int GET_CONNECTPSD_SHOW_DIALOG = 0X31;
 
+	/**
+	 * 修改密码成功
+	 */
+	public static final int MODIFY_PSD_SUCCESS = 0X41;
+	/**
+	 * 修改密码失败
+	 */
+	public static final int MODIFY_PSD_FAIL = 0X42;
+
 }

@@ -11,6 +11,6 @@
     <color name="black">#FF000000</color>
     <color name="translucent">#00000000</color>
 
-
+    <color name="transparency_bg">#33000000</color>
     <color name="qr_ext_color">#4c4c4c</color>
 </resources>
