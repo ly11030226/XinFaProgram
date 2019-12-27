@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.ads.xinfa.R;
 import com.ads.xinfa.entity.ImageAndVideoEntity;
+import com.ads.xinfa.ui.displayVideoAndImage.DisplayVideoAndImageFragment;
 
 import java.util.List;
 
@@ -17,10 +18,12 @@ public class RecyclerNormalAdapter extends RecyclerView.Adapter {
 
     private List<ImageAndVideoEntity.FileEntity> itemDataList = null;
     private Context context = null;
+    private DisplayVideoAndImageFragment.PlayCompleteCallBack callBack;
 
-    public RecyclerNormalAdapter(Context context, List<ImageAndVideoEntity.FileEntity> itemDataList) {
+    public RecyclerNormalAdapter(Context context, List<ImageAndVideoEntity.FileEntity> itemDataList,DisplayVideoAndImageFragment.PlayCompleteCallBack callBack) {
         this.itemDataList = itemDataList;
         this.context = context;
+        this.callBack = callBack;
     }
 
     public void notifyData(List<ImageAndVideoEntity.FileEntity> newList){
@@ -46,7 +49,7 @@ public class RecyclerNormalAdapter extends RecyclerView.Adapter {
         recyclerItemViewHolder.setRecyclerBaseAdapter(this);
         if (itemDataList.size() > 0) {
             ImageAndVideoEntity.FileEntity videoModel = itemDataList.get(position % itemDataList.size());
-            recyclerItemViewHolder.onBind(position, videoModel);
+            recyclerItemViewHolder.onBind(position, videoModel,callBack);
         }
     }
 

@@ -88,7 +88,6 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
     private DisplayHandleSocketData displayHandleSocketData;
     private static final int AUTO_PLAY = 789;
     private static final int PLAY_DURATION = 5*1000;
-    private int playIndex = 0;
     private AlertDialog ad;
 
     public DisplayVideoAndImageFragment() {
@@ -125,11 +124,8 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
                         myDialog.showDialog(BaseUtils.getStringByResouceId(R.string.loading));
                         break;
                     case AUTO_PLAY:
-                        mRecyclerView.smoothScrollToPosition(++playIndex);
-                        if (mVideoList.size()>0) {
-                            int duration = Integer.valueOf(mVideoList.get(playIndex%mVideoList.size()).getTime());
-                            handler.sendEmptyMessageDelayed(AUTO_PLAY,duration*1000);
-                        }
+                        int pos = (int) msg.obj;
+                        mRecyclerView.smoothScrollToPosition(pos+1);
                         break;
                     default:
                         break;
@@ -140,16 +136,17 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
         }
     };
     private void replay(){
-        int dataSize = mRecyclerNormalAdapter.getItemDataSize();
-        MyLogger.i(TAG,"replay dataSize ... "+dataSize);
-        playIndex = 0;
-//        mRecyclerNormalAdapter = new RecyclerNormalAdapter(getActivity(),mVideoList);
-//        mRecyclerView.setAdapter(mRecyclerNormalAdapter);
         mRecyclerView.scrollToPosition(0);
         if (mVideoList.size()>0) {
-            int duration = Integer.valueOf(mVideoList.get(playIndex%mVideoList.size()).getTime());
-            MyLogger.i(TAG,"");
-            handler.sendEmptyMessageDelayed(AUTO_PLAY,duration*1000);
+            ImageAndVideoEntity.FileEntity fileEntity = mVideoList.get(0);
+            String format = fileEntity.getFormat();
+            if ("图片".equals(format)) {
+                int duration = Integer.valueOf(fileEntity.getTime());
+                Message msg = handler.obtainMessage();
+                msg.what = AUTO_PLAY;
+                msg.obj = 0;
+                handler.sendMessageDelayed(msg,duration * 1000);
+            }
         }
     }
 
@@ -190,9 +187,15 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
             addListener();
             startServer();
             if (mVideoList.size()>0) {
-                int duration = Integer.valueOf(mVideoList.get(playIndex%mVideoList.size()).getTime());
-                MyLogger.i(TAG,"onCreate duration ... "+duration);
-                handler.sendEmptyMessageDelayed(AUTO_PLAY,duration*1000);
+                ImageAndVideoEntity.FileEntity fileEntity = mVideoList.get(0);
+                String format = fileEntity.getFormat();
+                if ("图片".equals(format)) {
+                    int duration = Integer.valueOf(fileEntity.getTime());
+                    Message msg = handler.obtainMessage();
+                    msg.what = AUTO_PLAY;
+                    msg.obj = 0;
+                    handler.sendMessageDelayed(msg,duration * 1000);
+                }
             }
             myDialog.hideDialog();
             //initService();
@@ -314,7 +317,13 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
 
     private void initData() {
         gson = new Gson();
-        mRecyclerNormalAdapter = new RecyclerNormalAdapter(getActivity(),mVideoList);
+        mRecyclerNormalAdapter = new RecyclerNormalAdapter(getActivity(), mVideoList, new PlayCompleteCallBack() {
+            @Override
+            public void playComplete(int pos) {
+                MyLogger.i("onScroll","playComplete");
+                mRecyclerView.smoothScrollToPosition(pos+1);
+            }
+        });
         mRecyclerView.setAdapter(mRecyclerNormalAdapter);
         //自定播放帮助类
         ScrollHelper mScrolHelper = new ScrollHelper(R.id.video_player,R.id.iv_item);
@@ -326,35 +335,18 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 try {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        MyLogger.i("onScroll","onScrollStateChanged");
+//                        MyLogger.i("onScroll","onScrollStateChanged");
                         if (isUsePagerSnapHelper) {
                             if (firstVisibleItem == lastVisibleItem) {
                                 MyLogger.i("onScroll","firstVisibleItem ... "+firstVisibleItem+
                                         "  lastVisibleItem ... "+lastVisibleItem);
-                                MyLogger.i("onScroll","playIndex ... "+playIndex);
-                                int duration;
-                                if (firstVisibleItem < playIndex) {
-                                    playIndex = firstVisibleItem-1;
-                                    handler.removeMessages(AUTO_PLAY);
-                                    if (mVideoList.size()>0) {
-                                        duration = Integer.valueOf(mVideoList.get(playIndex%mVideoList.size()).getTime());
-                                        handler.sendEmptyMessageDelayed(AUTO_PLAY,duration * 1000);
-                                    }
-                                }else if (firstVisibleItem > playIndex) {
-                                    playIndex = firstVisibleItem -1;
-                                    handler.removeMessages(AUTO_PLAY);
-                                    if (mVideoList.size()>0) {
-                                        duration = Integer.valueOf(mVideoList.get(playIndex%mVideoList.size()).getTime());
-                                        handler.sendEmptyMessageDelayed(AUTO_PLAY,duration * 1000);
-                                    }
-                                }
-                                playVideo(mScrolHelper);
+                                handler.removeMessages(AUTO_PLAY);
+                                playVideo(mScrolHelper,firstVisibleItem);
                             }
                         }else{
                             mScrolHelper.onScrollStateChanged(recyclerView,newState);
                         }
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -373,31 +365,13 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
 //                                    " position ... "+GSYVideoManager.instance().getPlayPosition());
                     if (isUsePagerSnapHelper) {
                         mScrolHelper.onScroll(firstVisibleItem,lastVisibleItem,dx,dy);
-//                        //当前播放的位置
-//                        int position = GSYVideoManager.instance().getPlayPosition();
-//                        //大于0说明有播放
-//                        if (position>= 0) {
-//                            //对应的播放列表TAG
-//                            if (GSYVideoManager.instance().getPlayTag().equals(RecyclerItemNormalHolder.TAG)
-//                                    && (position < firstVisibleItem || position > lastVisibleItem)) {
-//                                //不再可视范围内将释放所有Video资源
-//                                releaseVideoAndNotify();
-//                            }else if (GSYVideoManager.instance().getPlayTag().equals(RecyclerItemNormalHolder.TAG)
-//                                    && (position >= firstVisibleItem) && (position <= lastVisibleItem)) {
-//                            }
-//                        }
                     }
                 }
             }
         });
-//        playFirstPositionVideo(mScrolHelper);
-        if (mVideoList.size()>0) {
-            int duration = Integer.valueOf(mVideoList.get(playIndex%mVideoList.size()).getTime());
-            handler.sendEmptyMessageDelayed(AUTO_PLAY,duration * 1000);
-        }
     }
 
-    private void playVideo(ScrollHelper mScrolHelper) {
+    private void playVideo(ScrollHelper mScrolHelper,int pos) {
         if (mLayoutManager!=null) {
 //            int childCount = mLayoutManager.getChildCount();
             GSYBaseVideoPlayer mGSYBaseVideoPlayer = mLayoutManager.getChildAt(0).findViewById(R.id.video_player);
@@ -406,8 +380,13 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
             int visiableState = mGSYBaseVideoPlayer.getVisibility();
             if (visiableState == View.VISIBLE) {
                 mScrolHelper.handleHavePagerSnapHelper(mGSYBaseVideoPlayer);
-            }
-            else {
+            }else {
+                int duration = Integer.valueOf(mVideoList.get(pos%mVideoList.size()).getTime());
+                MyLogger.i("onScroll","duration ... "+duration);
+                Message msg = Message.obtain();
+                msg.what = AUTO_PLAY;
+                msg.obj = pos;
+                handler.sendMessageDelayed(msg,duration * 1000);
                 releaseVideoAndNotify();
                 mScrolHelper.releaseVideo();
             }
@@ -502,6 +481,11 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
         mRecyclerView.setVisibility(View.GONE);
         llEmpty.setVisibility(View.VISIBLE);
     }
+
+    public interface PlayCompleteCallBack{
+        void playComplete(int pos);
+    }
+
 
 
 

@@ -15,6 +15,7 @@ import com.ads.xinfa.entity.ImageAndVideoEntity;
 import com.ads.xinfa.ui.aboutVideoList.RecyclerItemNormalHolder;
 import com.ads.xinfa.ui.aboutVideoList.RecyclerNormalAdapter;
 import com.ads.xinfa.ui.aboutVideoList.ScrollCalculatorHelper;
+import com.ads.xinfa.ui.displayVideoAndImage.DisplayVideoAndImageFragment;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.CommonUtil;
 
@@ -81,7 +82,12 @@ public class DisplayVideoFragment extends MyFragment {
     }
 
     private void initData() {
-        mRecyclerNormalAdapter = new RecyclerNormalAdapter(getActivity(),mVideoList);
+        mRecyclerNormalAdapter = new RecyclerNormalAdapter(getActivity(), mVideoList, new DisplayVideoAndImageFragment.PlayCompleteCallBack() {
+            @Override
+            public void playComplete(int pos) {
+
+            }
+        });
         mRecyclerView.setAdapter(mRecyclerNormalAdapter);
 
         //限定范围为屏幕一半的上下偏移180
