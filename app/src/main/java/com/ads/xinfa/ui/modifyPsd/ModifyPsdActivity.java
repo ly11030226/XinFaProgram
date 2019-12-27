@@ -5,11 +5,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
+import com.ads.utillibrary.utils.MyDialog;
 import com.ads.utillibrary.utils.ToastUtils;
 import com.ads.xinfa.R;
 import com.ads.xinfa.base.BaseActivity;
@@ -38,17 +39,17 @@ public class ModifyPsdActivity extends BaseActivity{
     ImageView ivBack;
     @BindView(R.id.btn_commit)
     Button btnCommit;
-    @BindView(R.id.rl_pb)
-    RelativeLayout rlBg;
-
+    MyDialog myDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_motify_psd);
+        getWindow().setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         ButterKnife.bind(this);
         try {
-            rlBg.setVisibility(View.GONE);
+            myDialog = new MyDialog(ModifyPsdActivity.this,R.style.float_dialog);
+
             ivBack.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -93,7 +94,11 @@ public class ModifyPsdActivity extends BaseActivity{
             ToastUtils.showToast(ModifyPsdActivity.this,"两次输入的新秘密不一致");
             return;
         }
-        rlBg.setVisibility(View.VISIBLE);
+        if (oldStr.equals(newStr)) {
+            ToastUtils.showToast(ModifyPsdActivity.this,"新密码与旧密码相同");
+            return;
+        }
+        myDialog.showDialog("请稍后 ... ");
         //修改本地文件
         SettingManager.getInstance().modifyPsd(ModifyPsdActivity.this,newStr,new MyHandler(ModifyPsdActivity.this));
     }
@@ -101,6 +106,7 @@ public class ModifyPsdActivity extends BaseActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        myDialog = null;
     }
 
     static class MyHandler extends Handler{
@@ -108,17 +114,16 @@ public class ModifyPsdActivity extends BaseActivity{
         public MyHandler(ModifyPsdActivity activity) {
             super();
             this.activity = new WeakReference<ModifyPsdActivity>(activity);
-        }
+    }
 
         @Override
         public void handleMessage(@NonNull Message msg) {
             ModifyPsdActivity modifyPsdActivity = activity.get();
             if (modifyPsdActivity!=null) {
                 try {
-                    modifyPsdActivity.rlBg.setVisibility(View.GONE);
+                    modifyPsdActivity.myDialog.hideDialog();
                     if (msg.what == RemoteConst.MODIFY_PSD_SUCCESS) {
                         ToastUtils.showToast(modifyPsdActivity,"修改密码成功");
-                        Thread.sleep(500);
                         modifyPsdActivity.finish();
                     }else if (msg.what == RemoteConst.MODIFY_PSD_FAIL) {
                         ToastUtils.showToast(modifyPsdActivity,"修改密码失败");
@@ -129,4 +134,5 @@ public class ModifyPsdActivity extends BaseActivity{
             }
         }
     }
+
 }

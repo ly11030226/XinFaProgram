@@ -12,6 +12,7 @@
         android:id="@+id/ll_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="16dp"
@@ -60,10 +61,10 @@
         <TextView
             android:id="@+id/tv_first"
             style="@style/help_text_style"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingLeft="48dp"
-            android:paddingTop="16dp"
+            android:paddingTop="48dp"
             android:paddingRight="16dp"
             android:paddingBottom="16dp"
             android:text="@string/first_step"
@@ -80,6 +81,7 @@
             android:layout_marginLeft="16dp"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/tv_second"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_first">
@@ -101,15 +103,17 @@
 
 
         <TextView
+            android:id="@+id/tv_second"
             style="@style/help_text_style"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingLeft="48dp"
-            android:paddingTop="16dp"
+            android:paddingTop="48dp"
             android:paddingRight="16dp"
             android:paddingBottom="16dp"
             android:text="@string/second_step"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_download_apk" />
 
 
@@ -132,7 +136,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
-            android:paddingTop="16dp"
+            android:paddingTop="48dp"
             android:paddingRight="48dp"
             android:paddingBottom="16dp"
             android:text="@string/third_step"
@@ -168,7 +172,7 @@
             android:id="@+id/tv_forth"
             style="@style/help_text_style"
             android:paddingLeft="16dp"
-            android:paddingTop="16dp"
+            android:paddingTop="48dp"
             android:paddingRight="48dp"
             android:paddingBottom="8dp"
             android:text="@string/forth_step"

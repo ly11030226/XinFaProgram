@@ -90,16 +90,16 @@ public class SettingManager {
                 fos.flush();
                 fos.close();
                 if (setData(result)) {
-                    handler.sendEmptyMessage(RemoteConst.MODIFY_PSD_SUCCESS);
+                    handler.sendEmptyMessageDelayed(RemoteConst.MODIFY_PSD_SUCCESS,1500);
                 }else{
-                    handler.sendEmptyMessage(RemoteConst.MODIFY_PSD_FAIL);
+                    handler.sendEmptyMessageDelayed(RemoteConst.MODIFY_PSD_FAIL,1500);
                 }
             }else{
-                handler.sendEmptyMessage(RemoteConst.MODIFY_PSD_FAIL);
+                handler.sendEmptyMessageDelayed(RemoteConst.MODIFY_PSD_FAIL,1500);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            handler.sendEmptyMessage(RemoteConst.MODIFY_PSD_FAIL);
+            handler.sendEmptyMessageDelayed(RemoteConst.MODIFY_PSD_FAIL,1500);
         }
     }
 

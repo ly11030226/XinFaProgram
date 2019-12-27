@@ -35,7 +35,9 @@
             android:name=".ui.modifyPsd.ModifyPsdActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="landscape"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode = "stateAlwaysHidden|adjustPan"
+            />
 
         <service
             android:name=".floatView.FloatViewService"

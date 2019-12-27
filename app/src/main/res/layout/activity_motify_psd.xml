@@ -30,7 +30,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <EditText
         android:id="@+id/et_old"
         style="@style/modify_psd"
@@ -74,25 +73,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
-
-    <RelativeLayout
-        android:id="@+id/rl_pb"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/transparency_bg"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ProgressBar
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_centerInParent="true" />
-
-
-    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

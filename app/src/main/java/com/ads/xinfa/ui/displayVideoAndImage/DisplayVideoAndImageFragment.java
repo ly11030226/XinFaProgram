@@ -1,5 +1,6 @@
 package com.ads.xinfa.ui.displayVideoAndImage;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -30,12 +31,15 @@ import com.ads.xinfa.entity.ImageAndVideoEntity;
 import com.ads.xinfa.ui.aboutVideoList.RecyclerNormalAdapter;
 import com.ads.xinfa.ui.aboutVideoList.ScrollHelper;
 import com.ads.xinfa.ui.lanConnection.LanConnectionHostActivity;
+import com.ads.xinfa.ui.modifyPsd.ModifyPsdActivity;
 import com.ads.xinfa.utils.BaseUtils;
 import com.ads.xinfa.utils.SystemUtil;
 import com.ads.xinfa.utils.ToastUtils;
+import com.ads.xinfa.utils.Tools;
 import com.ads.xinfa.view.CustomMaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.gongw.remote.RemoteConst;
 import com.gongw.remote.communication.server.ServerByteSocketManager;
 import com.gongw.remote.search.DeviceSearchResponser;
 import com.google.gson.Gson;
@@ -85,6 +89,8 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
     private static final int AUTO_PLAY = 789;
     private static final int PLAY_DURATION = 5*1000;
     private int playIndex = 0;
+    private AlertDialog ad;
+
     public DisplayVideoAndImageFragment() {
         // Required empty public constructor
     }
@@ -242,24 +248,31 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
 
             @Override
             public void doubleClick(View v) {
-                //todo 暂时不显示搜索按钮
-                if (dialog == null) {
-                    dialog = new CustomMaterialDialog(getActivity());
+                if(ad!=null && ad.isShowing()){
+                    return;
                 }
-                dialog.show();
-
+                //todo 暂时不显示搜索按钮
                 View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_left_area,null);
                 ImageView ivSet = view.findViewById(R.id.iv_setting);
                 ivSet.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        startActivity(new Intent(getActivity(), ModifyPsdActivity.class));
                     }
                 });
-                new MaterialDialog.Builder(getActivity())
-                        .customView(view,false)
-                        .show();
-
+                ImageView ivLeft = view.findViewById(R.id.iv_left);
+                ImageView ivRight = view.findViewById(R.id.iv_right);
+                BaseUtils.showQRCode(ivLeft, RemoteConst.URL_HTTP_DOWNLOAD);
+                BaseUtils.showQRCode(ivRight,BaseUtils.getHostIP() + ":" + RemoteConst.DEVICE_SEARCH_PORT);
+                MyLogger.i(TAG,RemoteConst.URL_HTTP_DOWNLOAD);
+                MyLogger.i(TAG,BaseUtils.getHostIP() + ":" + RemoteConst.DEVICE_SEARCH_PORT);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setView(view);
+                ad = builder.create();
+                ad.show();
+                int dpWidth = Tools.dip2px(getActivity(),600);
+                int dpHeight = Tools.dip2px(getActivity(),400);
+                ad.getWindow().setLayout(dpWidth,dpHeight);
             }
         });
     }

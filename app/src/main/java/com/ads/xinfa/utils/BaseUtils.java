@@ -953,8 +953,8 @@ public class BaseUtils {
             bitmap = barcodeEncoder.encodeBitmap(
                     returnContent,
                     BarcodeFormat.QR_CODE,
-                    Tools.dip2px(ivBarcode.getContext(),140),
-                    Tools.dip2px(ivBarcode.getContext(),140));
+                    Tools.dip2px(ivBarcode.getContext(),200),
+                    Tools.dip2px(ivBarcode.getContext(),200));
             if (bitmap!=null) {
                 ivBarcode.setImageBitmap(bitmap);
             }
