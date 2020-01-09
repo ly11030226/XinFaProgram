@@ -66,7 +66,7 @@
     <string name="conn_device">已经连接设备</string>
     <string name="server_socket_close">与展示端断开连接</string>
     <string name="server_has_no_res">广告机不存在该文件</string>
-    <string name="download_res_is_finish">文件已下载，保存路径为【根目录/SZTY/FileDownloader】</string>
+    <string name="download_res_is_finish">文件已下载</string>
     <string name="json_txt_is_null">没有展示文件</string>
     <string name="res_is_exist">文件已存在</string>
     <string name="connect_psd">请输入连接机器的密码</string>

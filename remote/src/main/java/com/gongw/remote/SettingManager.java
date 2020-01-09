@@ -34,9 +34,12 @@ public class SettingManager {
     }
 
     public void writeConfigTxt(Context context) throws IOException {
-        File f = context.getExternalFilesDir("szty/Config");
-        //  /storage/emulated/0/Android/data/com.ads.xinfa/files/config
-        String path = f.getAbsolutePath();
+        String s = context.getExternalFilesDir("szty").getAbsolutePath()+File.separator+"Config";
+        File f = new File(s);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        //  /storage/emulated/0/Android/data/com.ads.xinfa/files/szty/Config
         File file = new File(f,SETTING_TXT);
         if (!file.exists()) {
             file.createNewFile();

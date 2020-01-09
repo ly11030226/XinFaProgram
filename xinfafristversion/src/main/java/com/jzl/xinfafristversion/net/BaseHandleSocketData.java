@@ -95,8 +95,8 @@ public abstract class BaseHandleSocketData{
         fos.write(b,0,b.length);
         fos.close();
     }
-    public void createServerIfRunnableIsNull(){
-        ServerByteSocketManager.getInstance().createServerIfRunnableIsNull(RemoteConst.COMMAND_RECEIVE_PORT, new ServerByteSocketManager.RequestListener() {
+    public void createServerIfRunnableIsNull(Context context){
+        ServerByteSocketManager.getInstance().createServerIfRunnableIsNull(context,RemoteConst.COMMAND_RECEIVE_PORT, new ServerByteSocketManager.RequestListener() {
             @Override
             public void clientConn() {
                 haveClientConn();
@@ -143,6 +143,11 @@ public abstract class BaseHandleSocketData{
                         isNeedUploadFile();
                     }
                 }
+            }
+
+            @Override
+            public String getPsd() {
+                return null;
             }
         });
     }

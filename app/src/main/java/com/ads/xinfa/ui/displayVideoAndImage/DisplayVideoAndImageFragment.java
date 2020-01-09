@@ -10,9 +10,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -89,6 +93,7 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
     private static final int AUTO_PLAY = 789;
     private static final int PLAY_DURATION = 5*1000;
     private AlertDialog ad;
+    private ScrollHelper mScrolHelper;
 
     public DisplayVideoAndImageFragment() {
         // Required empty public constructor
@@ -100,21 +105,23 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
             try {
                 switch (msg.what) {
                     case Constant.KEY_UPDATE_NEW_LIST:
+                        Log.i(TAG, "handleMessage: KEY_UPDATE_NEW_LIST");
                         setNotEmpty();
                         handler.removeMessages(AUTO_PLAY);
                         Thread.sleep(200);
                         ArrayList<ImageAndVideoEntity.FileEntity> newList = (ArrayList<ImageAndVideoEntity.FileEntity>) msg.obj;
                         mRecyclerNormalAdapter.notifyData(newList);
-                        replay();
                         myDialog.hideDialog();
+                        replay();
                         break;
                     case Constant.KEY_TRANFER_SUCCESS:
+                        Log.i(TAG, "handleMessage: KEY_TRANFER_SUCCESS");
                         handler.removeMessages(AUTO_PLAY);
                         Thread.sleep(200);
                         ArrayList<ImageAndVideoEntity.FileEntity> l = (ArrayList<ImageAndVideoEntity.FileEntity>) msg.obj;
                         mRecyclerNormalAdapter.notifyData(l);
-                        replay();
                         myDialog.hideDialog();
+                        replay();
                         break;
                     case Constant.KEY_LIST_IS_EMPTY:
                         setEmpty();
@@ -136,8 +143,39 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
         }
     };
     private void replay(){
+        Log.i(TAG, "replay: start");
+        if (mLayoutManager == null) {
+            Log.e(TAG, "replay: mLayoutManager is null", null);
+            return;
+        }
+        int childCount = mLayoutManager.getChildCount();
+        Log.i(TAG, "replay: child count ... "+childCount);
+        // todo 证明第一次上传文件，这里的childCount为什么等于0需要看LayoutManager源码,是否跟RecyclerView没有正常运行LayoutManager没有值有关
+        if (childCount == 0) {
+            autoJumpIfImage();
+            return;
+        }
+        View temp = mLayoutManager.getChildAt(0);
+        if (temp == null) {
+            Log.i(TAG, "replay: child view is null",null);
+            return;
+        }
+        GSYBaseVideoPlayer mGSYBaseVideoPlayer = temp.findViewById(R.id.video_player);
+        Log.i(TAG, "replay: get GSYBaseVideoPlayer");
+        if (mGSYBaseVideoPlayer.getVisibility() == View.VISIBLE) {
+            int state = mGSYBaseVideoPlayer.getCurrentPlayer().getCurrentState();
+            mGSYBaseVideoPlayer.release();
+            if (mScrolHelper!=null) {
+                mScrolHelper.releaseVideo();
+            }
+        }
         mRecyclerView.scrollToPosition(0);
+        autoJumpIfImage();
+    }
+
+    private void autoJumpIfImage() {
         if (mVideoList.size()>0) {
+            Log.i(TAG, "autoJumpIfImage: list length  ... "+mVideoList.size());
             ImageAndVideoEntity.FileEntity fileEntity = mVideoList.get(0);
             String format = fileEntity.getFormat();
             if ("图片".equals(format)) {
@@ -147,6 +185,8 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
                 msg.obj = 0;
                 handler.sendMessageDelayed(msg,duration * 1000);
             }
+        }else{
+            Log.e(TAG, "autoJumpIfImage: list size is 0", null);
         }
     }
 
@@ -207,7 +247,7 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
 
     private void startServer() {
         displayHandleSocketData = new DisplayHandleSocketData(getActivity(),mVideoList,handler);
-        displayHandleSocketData.createServerIfRunnableIsNull();
+        displayHandleSocketData.createServerIfRunnableIsNull(getActivity());
     }
 
 
@@ -271,11 +311,15 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
                 MyLogger.i(TAG,BaseUtils.getHostIP() + ":" + RemoteConst.DEVICE_SEARCH_PORT);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setView(view);
+
                 ad = builder.create();
                 ad.show();
                 int dpWidth = Tools.dip2px(getActivity(),600);
                 int dpHeight = Tools.dip2px(getActivity(),400);
-                ad.getWindow().setLayout(dpWidth,dpHeight);
+                Window window = ad.getWindow();
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.gravity = Gravity.CENTER;
+                window.setLayout(dpWidth,dpHeight);
             }
         });
     }
@@ -299,6 +343,8 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
                 materialDialog.dismiss();
             }
         }).build();
+        WindowManager.LayoutParams params = materialDialog.getWindow().getAttributes();
+        params.gravity = Gravity.CENTER;
         materialDialog.show();
     }
 
@@ -326,7 +372,7 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
         });
         mRecyclerView.setAdapter(mRecyclerNormalAdapter);
         //自定播放帮助类
-        ScrollHelper mScrolHelper = new ScrollHelper(R.id.video_player,R.id.iv_item);
+        mScrolHelper = new ScrollHelper(R.id.video_player,R.id.iv_item);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             int firstVisibleItem, lastVisibleItem;
@@ -375,10 +421,11 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
         if (mLayoutManager!=null) {
 //            int childCount = mLayoutManager.getChildCount();
             GSYBaseVideoPlayer mGSYBaseVideoPlayer = mLayoutManager.getChildAt(0).findViewById(R.id.video_player);
-            int state = mGSYBaseVideoPlayer.getCurrentState();
-//            MyLogger.i(TAG, "onScrollStateChanged state ... " + state);
+            int state = mGSYBaseVideoPlayer.getCurrentPlayer().getCurrentState();
+            //            MyLogger.i(TAG, "onScrollStateChanged state ... " + state);
             int visiableState = mGSYBaseVideoPlayer.getVisibility();
             if (visiableState == View.VISIBLE) {
+                MyLogger.i(TAG, "playVideo: state ... "+state);
                 mScrolHelper.handleHavePagerSnapHelper(mGSYBaseVideoPlayer);
             }else {
                 int duration = Integer.valueOf(mVideoList.get(pos%mVideoList.size()).getTime());
@@ -468,7 +515,9 @@ public class DisplayVideoAndImageFragment extends MyFragment implements LanConne
     public void getAction(String action) {
         if (Constant.FROM_HELP.equals(action)) {
             isOpen = true;
-            btnSearch.setText("关闭搜索响应");
+            if (btnSearch!=null) {
+                btnSearch.setText("关闭搜索响应");
+            }
         }
     }
     private void setNotEmpty(){

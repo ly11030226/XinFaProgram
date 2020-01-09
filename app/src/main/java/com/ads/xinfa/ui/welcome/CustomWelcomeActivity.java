@@ -68,8 +68,18 @@ public class CustomWelcomeActivity extends WelcomeActivity {
                 new Thread(new ReadFileRunnable()).start();
             }
         } else {
-            writeFtpServiceApk(JUMP_TO_HELP);
+//            writeFtpServiceApk(JUMP_TO_HELP);
+            jumpToWhere(JUMP_TO_HELP);
         }
+    }
+
+    private void jumpToWhere(int type){
+        if (type == JUMP_TO_HELP) {
+            sendMsgToHelpActivity();
+        } else if (type == JUMP_TO_LAN_CONN) {
+            sendMsgToLanConnectionHostActivity();
+        }
+        //开启
     }
 
     private class ReadFileRunnable implements Runnable {
@@ -96,7 +106,8 @@ public class CustomWelcomeActivity extends WelcomeActivity {
                 imageAndVideoEntity.getInfo().setFtpPath("");
                 String jsonStr = gson.toJson(imageAndVideoEntity);
                 writeData(jsonStr.getBytes());
-                writeFtpServiceApk(JUMP_TO_LAN_CONN);
+//                writeFtpServiceApk(JUMP_TO_LAN_CONN);
+                jumpToWhere(JUMP_TO_LAN_CONN);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -131,7 +142,8 @@ public class CustomWelcomeActivity extends WelcomeActivity {
                     String json = makeJsonData();
                     MyLogger.i(TAG, "json ... " + json);
                     writeData(json.getBytes());
-                    writeFtpServiceApk(JUMP_TO_LAN_CONN);
+//                    writeFtpServiceApk(JUMP_TO_LAN_CONN);
+                    jumpToWhere(JUMP_TO_LAN_CONN);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

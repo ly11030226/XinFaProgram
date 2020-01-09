@@ -203,10 +203,11 @@ public class MainActivity extends BaseActivity implements MainContract.MainView 
                             mMainActivity.mMainPresenter.downloadApk();
                             break;
                         case Constant.INSTALL_APK:
+                            String path = mMainActivity.getExternalFilesDir("szty").getAbsolutePath()+File.separator + "FileDownloader";
                             //安装apk
                             AutoInstallUtil.install(
                                     mMainActivity,
-                                    Constant.PATH_DOWNLOAD_APK+ File.separator+Constant.NAME_DOWNLOAD_APK);
+                                    path+ File.separator+Constant.NAME_DOWNLOAD_APK);
                             break;
                         default:
                             break;

@@ -43,7 +43,7 @@ public class HelpActivity extends BaseActivity {
             DeviceSearchResponser.open(SystemUtil.getSystemModelExtra());
             //开始接受通信命令
             myBaseHandleSocketData = new HelpHandleSocketData(HelpActivity.this);
-            myBaseHandleSocketData.createServerIfRunnableIsNull();
+            myBaseHandleSocketData.createServerIfRunnableIsNull(HelpActivity.this);
 
         } catch (Exception e) {
             e.printStackTrace();

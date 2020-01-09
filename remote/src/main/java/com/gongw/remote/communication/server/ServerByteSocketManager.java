@@ -1,6 +1,6 @@
 package com.gongw.remote.communication.server;
 
-import android.os.Environment;
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -32,10 +32,7 @@ import java.net.Socket;
 public class ServerByteSocketManager {
     private static final String TAG = "ServerByteSocketManager";
     public ServerByteSocketManager.RequestListener listener;
-    private static final String SAVE_PATH =
-            Environment.getExternalStorageDirectory().getPath()
-                    + File.separator+
-                    "SZTY"+File.separator+"Upload"+File.separator;
+    private static String SAVE_PATH;
     private ServerByteSocketRunnable serverSocketRunnable;
     private static final int FLAG_SEND_MSG = 0x33;
     private static final int FLAG_SEND_MSG_BYTE = 0x34;
@@ -54,10 +51,6 @@ public class ServerByteSocketManager {
 
 
     private ServerByteSocketManager(){
-        File file = new File(SAVE_PATH);
-        if (!file.exists()) {
-            file.mkdirs();
-        }
     }
     private static ServerByteSocketManager instance;
     public static ServerByteSocketManager getInstance(){
@@ -70,8 +63,10 @@ public class ServerByteSocketManager {
         }
         return instance;
     }
-    public void createServerIfRunnableIsNull(int port, ServerByteSocketManager.RequestListener mListener){
+    public void createServerIfRunnableIsNull(Context context,int port, ServerByteSocketManager.RequestListener mListener){
         this.listener = mListener;
+        String path = context.getExternalFilesDir("szty").getAbsolutePath();
+        SAVE_PATH = path + File.separator + "Upload" + File.separator;
         if (serverSocketRunnable == null) {
             serverSocketRunnable = new ServerByteSocketRunnable(port);
             new Thread(serverSocketRunnable).start();
@@ -254,9 +249,8 @@ public class ServerByteSocketManager {
                         int _length = 0;
                         _length = dis.read(_b,0,length);
                         String _fileName = new String(_b,0,_length);
-                        String _path = Environment.getExternalStorageDirectory().getPath()
-                                +File.separator+
-                                "SZTY"+File.separator+"Upload"+File.separator;
+
+                        String _path = SAVE_PATH;
                         File file = new File(_path);
                         File _file = new File(_path+_fileName);
                         if (!file.exists()) {

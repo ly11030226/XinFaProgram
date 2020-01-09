@@ -48,8 +48,9 @@ public class RecyclerNormalAdapter extends RecyclerView.Adapter {
         RecyclerItemNormalHolder recyclerItemViewHolder = (RecyclerItemNormalHolder) holder;
         recyclerItemViewHolder.setRecyclerBaseAdapter(this);
         if (itemDataList.size() > 0) {
+            boolean isOne = itemDataList.size() == 1;
             ImageAndVideoEntity.FileEntity videoModel = itemDataList.get(position % itemDataList.size());
-            recyclerItemViewHolder.onBind(position, videoModel,callBack);
+            recyclerItemViewHolder.onBind(isOne,position, videoModel,callBack);
         }
     }
 

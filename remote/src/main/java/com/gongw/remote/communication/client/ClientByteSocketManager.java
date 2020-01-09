@@ -1,6 +1,6 @@
 package com.gongw.remote.communication.client;
 
-import android.os.Environment;
+import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -43,14 +43,13 @@ public class ClientByteSocketManager {
     private static final int EIGHTH = 8;
 
     public static boolean connect = false;
-
+    private Context context;
 
     public static String currentDownloadName;
 
     private ClientByteSocketManager() {
     }
 
-    ;
     private static ClientByteSocketManager instance;
     private ClientByteSocketRunnable clientByteSocketRunnable;
     private Thread thread;
@@ -66,7 +65,8 @@ public class ClientByteSocketManager {
         return instance;
     }
 
-    public void createConn(String ip, Handler handler) {
+    public void createConn(Context context,String ip, Handler handler) {
+        this.context = context;
         if (clientByteSocketRunnable == null) {
             clientByteSocketRunnable = new ClientByteSocketRunnable(ip, handler);
             Log.i(TAG, "createConn clientByteSocketRunnable==null , and ip ... " + ip);
@@ -198,29 +198,31 @@ public class ClientByteSocketManager {
                             byte[] b = new byte[1024];
                             int len = 0 ;
                             int total = 0;
-                            String s = Environment
-                                    .getExternalStorageDirectory().getPath()
-                                    + File.separator
-                                    + "SZTY" + File.separator + "FileDownloader" + File.separator;
-                            if (TextUtils.isEmpty(currentDownloadName)) {
-                                currentDownloadName = "temp.jpg";
+                            if (ClientByteSocketManager.getInstance().context!=null) {
+                                String absolutePath = ClientByteSocketManager.getInstance().context.
+                                        getExternalFilesDir("szty").getAbsolutePath();
+                                String s = absolutePath + File.separator + "FileDownloader" + File.separator;
+                                if (TextUtils.isEmpty(currentDownloadName)) {
+                                    currentDownloadName = "temp.jpg";
+                                }
+                                String p = s+currentDownloadName;
+                                File file = new File(s);
+                                if (!file.exists()) {
+                                    file.mkdirs();
+                                }
+                                File f = new File(p);
+                                Log.i(TAG, "receiveMsgFromByte: download file ... "+p);
+                                FileOutputStream fos = new FileOutputStream(f);
+                                while(total < dataLength){
+                                    len = dis.read(b,0,b.length);
+                                    Log.i(TAG,"read len ... "+len);
+                                    fos.write(b,0,len);
+                                    total+=len;
+                                    Log.i(TAG,"total ... "+total);
+                                }
+                                fos.close();
+                                downloafFileHandler.sendEmptyMessage(CommunicationKey.FLAG_DOWNLOAD_FILE_IS_FINISH);
                             }
-                            String p = s+currentDownloadName;
-                            File file = new File(s);
-                            if (!file.exists()) {
-                                file.mkdirs();
-                            }
-                            File f = new File(p);
-                            FileOutputStream fos = new FileOutputStream(f);
-                            while(total < dataLength){
-                                len = dis.read(b,0,b.length);
-                                Log.i(TAG,"read len ... "+len);
-                                fos.write(b,0,len);
-                                total+=len;
-                                Log.i(TAG,"total ... "+total);
-                            }
-                            fos.close();
-                            downloafFileHandler.sendEmptyMessage(CommunicationKey.FLAG_DOWNLOAD_FILE_IS_FINISH);
                         }
                         break;
                     case RemoteConst.RESPONSE_PSD_TO_CLIENT:

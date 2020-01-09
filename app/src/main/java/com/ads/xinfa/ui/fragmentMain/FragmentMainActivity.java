@@ -175,8 +175,9 @@ public class FragmentMainActivity extends BaseActivity implements FragmentMainCo
                             mMainActivity.mFragmentMainPresenter.downloadApk();
                             break;
                         case Constant.INSTALL_APK:
+                            String path = mMainActivity.getExternalFilesDir("szty").getAbsolutePath()+File.separator + "FileDownloader";
                             //安装apk
-                            AutoInstallUtil.install(mMainActivity, Constant.PATH_DOWNLOAD_APK + File.separator + Constant.NAME_DOWNLOAD_APK);
+                            AutoInstallUtil.install(mMainActivity, path + File.separator + Constant.NAME_DOWNLOAD_APK);
                             break;
                         default:
                             break;

@@ -1,9 +1,5 @@
 package com.ads.xinfa.base;
 
-import android.os.Environment;
-
-import java.io.File;
-
 /**
  * 常量
  */
@@ -44,12 +40,12 @@ public class Constant {
 
     //下载apk存放路径
     public static final String NAME_DOWNLOAD_APK = "myxinfa.apk";
-    public static final String PATH_DOWNLOAD_APK = Environment
-            .getExternalStorageDirectory().getPath()+
-            File.separator+
-            "SZTY" +
-            File.separator+
-            "download";
+//    public static final String PATH_DOWNLOAD_APK = Environment
+//            .getExternalStorageDirectory().getPath()+
+//            File.separator+
+//            "SZTY" +
+//            File.separator+
+//            "download";
 
 
 

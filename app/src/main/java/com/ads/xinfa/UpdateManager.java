@@ -188,12 +188,13 @@ public class UpdateManager {
                     // 创建输入流
                     InputStream is = conn.getInputStream();
 
-                    File file = new File(Constant.PATH_DOWNLOAD_APK);
+                    String path = mContext.getExternalFilesDir("szty").getAbsolutePath();
+                    File file = new File(path+File.separator + "FileDownloader");
                     // 判断文件目录是否存在
                     if (!file.exists()) {
                         file.mkdir();
                     }
-                    File apkFile = new File(Constant.PATH_DOWNLOAD_APK,Constant.NAME_DOWNLOAD_APK);
+                    File apkFile = new File(file,Constant.NAME_DOWNLOAD_APK);
                     FileOutputStream fos = new FileOutputStream(apkFile);
                     int count = 0;
                     // 缓存
@@ -233,7 +234,9 @@ public class UpdateManager {
      * 安装APK文件
      */
     public void installApk() {
-        File apkfile = new File(Constant.PATH_DOWNLOAD_APK, Constant.NAME_DOWNLOAD_APK);
+        String path = mContext.getExternalFilesDir("szty").getAbsolutePath();
+        File file = new File(path+File.separator + "FileDownloader");
+        File apkfile = new File(file, Constant.NAME_DOWNLOAD_APK);
         if (!apkfile.exists()) {
             return;
         }
@@ -242,5 +245,4 @@ public class UpdateManager {
         message.obj="";
         handler.sendMessage(message);
     }
-
 }

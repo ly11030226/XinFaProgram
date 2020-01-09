@@ -278,7 +278,7 @@ public class MainActivity extends BaseActivity {
     private void createConnection(Device device) {
         String ip = device.getIp();
         MyLogger.i(TAG,"createConnection ... "+ip);
-        ClientByteSocketManager.getInstance().createConn(ip, handler);
+        ClientByteSocketManager.getInstance().createConn(MainActivity.this,ip, handler);
     }
 
     @Override
