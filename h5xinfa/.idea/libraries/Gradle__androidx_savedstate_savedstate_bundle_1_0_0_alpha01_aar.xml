@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: androidx.savedstate:savedstate-bundle:1.0.0-alpha01@aar">
+    <CLASSES>
+      <root url="jar://D:/SoftWare/ProgramSoftWare/gradle/gradle-5.4.1/caches/transforms-2/files-2.1/e0d74ab88d7d4e6c25a081ce9fab81b2/savedstate-bundle-1.0.0-alpha01/jars/classes.jar!/" />
+      <root url="file://D:/SoftWare/ProgramSoftWare/gradle/gradle-5.4.1/caches/transforms-2/files-2.1/e0d74ab88d7d4e6c25a081ce9fab81b2/savedstate-bundle-1.0.0-alpha01/res" />
+    </CLASSES>
+    <SOURCES>
+      <root url="jar://D:/SoftWare/ProgramSoftWare/gradle/gradle-5.4.1/caches/modules-2/files-2.1/androidx.savedstate/savedstate-bundle/1.0.0-alpha01/c88e06d6272beeffdf519d9edea76714261b74e4/savedstate-bundle-1.0.0-alpha01-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

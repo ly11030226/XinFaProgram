@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">H5XinFa</string>
+
+    <string name="dialog_title">提示</string>
+    <string name="dialog_commit">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="qrcode_text">将二维码/条码放入框内，即可自动扫描</string>
+    <string name="dialog_message">您确定与IP地址是【%s】终端通信吗?</string>
+    <string name="dialog_do_not">不开通</string>
+    <string name="dialog_confirm">确认</string>
+    <string name="res_is_empty">展示端还没有任何显示内容，请添加新的资源</string>
+    <string name="res_no_permission">请设置允许开通【存储】和【使用相机】权限,否则无法添加新资源</string>
+
+    <string name="config_file_not_exist">配置文件不存在</string>
+    <string name="read_config_file_error">读取配置文件出错</string>
+    <string name="unzip_error">解压文件出错</string>
+    <string name="create_file_error">创建目录失败</string>
+    <string name="update_finish">更新完成</string>
+    <string name="update_error">更新失败</string>
+    <string name="download_zip_error">下载压缩包失败</string>
+    <string name="download_apk_error">下载安装包失败</string>
+    <string name="zip_file_is_not_exists">压缩文件不存在</string>
+    <string name="install_error">安装失败</string>
+    <string name="press_again_exit">再按一次退出程序</string>
+</resources>
