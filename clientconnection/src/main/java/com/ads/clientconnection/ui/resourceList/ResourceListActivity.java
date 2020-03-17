@@ -292,7 +292,7 @@ public class ResourceListActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                     if (srcBytes==null) {
-                        MyLogger.e(TAG,"download file path【"+fileEntity.getPath()+"】is error");
+                        MyLogger.e(TAG,"download file path【"+fileEntity.getName()+"】is error");
                         return;
                     }
                     int dataLength = srcBytes.length;
@@ -512,7 +512,7 @@ public class ResourceListActivity extends BaseActivity {
                     byte[] results = bos.toByteArray();
                     ImageAndVideoEntity.FileEntity fileEntity = new ImageAndVideoEntity.FileEntity();
                     fileEntity.setAdd(true);
-                    fileEntity.setPath(path);
+//                    fileEntity.setPath(path);
                     String name = file.getName();
                     String format = "";
                     int minute = 0,sec = 0;

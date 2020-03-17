@@ -250,7 +250,7 @@ public class PlayListView extends FrameLayout {
                                 e.printStackTrace();
                             }
                             if (srcBytes==null) {
-                                MyLogger.e(TAG,"download file path【"+fileEntity.getPath()+"】is error");
+                                MyLogger.e(TAG,"download file path【"+fileEntity.getName()+"】is error");
                                 return;
                             }
                             int dataLength = srcBytes.length;

@@ -82,6 +82,9 @@ public class MainActivity extends BaseActivity {
     private static Device mCurrentDevice;
     private boolean isConn = false;
 
+    public static final int PRESS_BACK_BUTTON_INTERVAL = 2*1000;
+    private long firstPressedTime;
+
 
     private Handler handler = new Handler() {
         @Override
@@ -448,7 +451,7 @@ public class MainActivity extends BaseActivity {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 long secondTime = System.currentTimeMillis();
-                if (secondTime - firstTime > 2000) {                                         //如果两次按键时间间隔大于2秒，则不退出
+                if (secondTime - firstTime > PRESS_BACK_BUTTON_INTERVAL) {                                         //如果两次按键时间间隔大于2秒，则不退出
                     Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
                     firstTime = secondTime;//更新firstTime
                     return true;
@@ -461,4 +464,14 @@ public class MainActivity extends BaseActivity {
         return super.onKeyUp(keyCode, event);
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - firstPressedTime < 2000) {
+            super.onBackPressed();
+        } else {
+            Toast.makeText(MainActivity.this, R.string.press_again_exit, Toast.LENGTH_SHORT).show();
+            firstPressedTime = System.currentTimeMillis();
+        }
+    }
 }

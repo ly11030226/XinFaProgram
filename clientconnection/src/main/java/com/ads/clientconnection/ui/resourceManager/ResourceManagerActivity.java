@@ -2,15 +2,21 @@ package com.ads.clientconnection.ui.resourceManager;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -31,6 +37,7 @@ import com.ads.utillibrary.utils.MyProgressbar;
 import com.ads.utillibrary.utils.ToastUtils;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.gongw.remote.RemoteConst;
 import com.gongw.remote.Tools;
 import com.gongw.remote.communication.CommunicationKey;
 import com.gongw.remote.communication.client.ClientByteSocketManager;
@@ -49,6 +56,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +86,7 @@ public class ResourceManagerActivity extends BaseActivity {
     private ArrayList<ImageAndVideoEntity.FileEntity> fileEntityArrayList = new ArrayList<>();
     private ArrayList<ImageAndVideoEntity.FileEntity> mTempFileEntityList = new ArrayList<>();
     private MyProgressbar myProgressbar;
+    private static final String DEFAULT_IMAGE_DURATION = "10";
 
     @BindView(R.id.plv)
     PlayListView plv;
@@ -88,28 +97,28 @@ public class ResourceManagerActivity extends BaseActivity {
     private MaterialDialog noPermissionDialog, noAskDialog;
     private int REQUEST_CODE_CHOOSE = 0x11;
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == CommunicationKey.FLAG_DOWNLOAD_FILE_IS_NULL) {
                 myProgressbar.hideBar();
-                ToastUtils.showToast(ResourceManagerActivity.this,BaseUtils.getStringByResouceId(R.string.server_has_no_res));
-            }else if (msg.what == CommunicationKey.FLAG_DOWNLOAD_FILE_IS_FINISH) {
+                ToastUtils.showToast(ResourceManagerActivity.this, BaseUtils.getStringByResouceId(R.string.server_has_no_res));
+            } else if (msg.what == CommunicationKey.FLAG_DOWNLOAD_FILE_IS_FINISH) {
                 myProgressbar.hideBar();
-                ToastUtils.showToast(ResourceManagerActivity.this,BaseUtils.getStringByResouceId(R.string.download_res_is_finish));
-            }else if (msg.what == CommunicationKey.FLAG_FILE_IS_EXIST) {
+                ToastUtils.showToast(ResourceManagerActivity.this, BaseUtils.getStringByResouceId(R.string.download_res_is_finish));
+            } else if (msg.what == CommunicationKey.FLAG_FILE_IS_EXIST) {
                 myProgressbar.hideBar();
-                ToastUtils.showToast(ResourceManagerActivity.this,BaseUtils.getStringByResouceId(R.string.res_is_exist));
+                ToastUtils.showToast(ResourceManagerActivity.this, BaseUtils.getStringByResouceId(R.string.res_is_exist));
             }
         }
     };
-    private Handler controlHandler = new Handler(){
+    private Handler controlHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == CommunicationKey.FLAG_CLIENT_UPDATE_SUCCESS) {
-                for (ImageAndVideoEntity.FileEntity entity:fileEntityArrayList){
+                for (ImageAndVideoEntity.FileEntity entity : fileEntityArrayList) {
                     if (entity.isAdd()) {
                         entity.setAdd(false);
                     }
@@ -117,7 +126,7 @@ public class ResourceManagerActivity extends BaseActivity {
                 myProgressbar.hideBar();
                 mTempFileEntityList.clear();
                 mTempFileEntityList.addAll(fileEntityArrayList);
-                Toast.makeText(ResourceManagerActivity.this,"上传成功",Toast.LENGTH_LONG).show();
+                Toast.makeText(ResourceManagerActivity.this, "上传成功", Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -129,7 +138,7 @@ public class ResourceManagerActivity extends BaseActivity {
         ButterKnife.bind(this);
         try {
             //读本地保存的sharedpreference (名字是非DEFAULT的 播放列表)
-//            readSharedpreference();
+            //            readSharedpreference();
             //注册广播 用来监听 如果服务器端close，本界面finish
             myProgressbar = new MyProgressbar(ResourceManagerActivity.this);
             registeReceiver();
@@ -143,10 +152,10 @@ public class ResourceManagerActivity extends BaseActivity {
     private void setImageAndVideoList() {
         images.clear();
         videos.clear();
-        for(ImageAndVideoEntity.FileEntity fileEntity : fileEntityArrayList){
-            if (fileEntity.getFormat().equals("图片")) {
+        for (ImageAndVideoEntity.FileEntity fileEntity : fileEntityArrayList) {
+            if (fileEntity.getFormat().equals(RemoteConst.IMAGE)) {
                 images.add(fileEntity);
-            }else if (fileEntity.getFormat().equals("视频")) {
+            } else if (fileEntity.getFormat().equals(RemoteConst.VIDEO)) {
                 videos.add(fileEntity);
             }
         }
@@ -190,7 +199,7 @@ public class ResourceManagerActivity extends BaseActivity {
         entity1.setChoice(true);
         entity1.setName("播放列表");
         //暂时不用数据
-//        entity1.setFileEntityList(fileEntityArrayList);
+        //        entity1.setFileEntityList(fileEntityArrayList);
         playListEntityList.add(entity1);
         //更新PlayList内容
         plv.updatePlayList(playListEntityList);
@@ -198,12 +207,12 @@ public class ResourceManagerActivity extends BaseActivity {
 
     private void initData() {
         //测试数据
-//        testData();
-//        PlayListEntity playListEntity = new PlayListEntity();
-//        playListEntity.setName(Constant.PLAY_LIST_DEFAULT_NAME);
-//        playListEntity.setChoice(true);
-//        playListEntity.setFileEntityList((List<ImageAndVideoEntity.FileEntity>) mImageAndVideoEntity);
-//        playListEntityList.add(0, playListEntity);
+        //        testData();
+        //        PlayListEntity playListEntity = new PlayListEntity();
+        //        playListEntity.setName(Constant.PLAY_LIST_DEFAULT_NAME);
+        //        playListEntity.setChoice(true);
+        //        playListEntity.setFileEntityList((List<ImageAndVideoEntity.FileEntity>) mImageAndVideoEntity);
+        //        playListEntityList.add(0, playListEntity);
         fileEntityArrayList.clear();
         fileEntityArrayList.addAll(mImageAndVideoEntity.getFiles());
         mTempFileEntityList.clear();
@@ -212,78 +221,24 @@ public class ResourceManagerActivity extends BaseActivity {
         setImageAndVideoList();
     }
 
-    private void testData() {
-        mImageAndVideoEntity = new ImageAndVideoEntity();
-        ArrayList<ImageAndVideoEntity.FileEntity> fileEntityList = new ArrayList<>();
 
-        ImageAndVideoEntity.FileEntity fileEntity1 = new ImageAndVideoEntity.FileEntity();
-        fileEntity1.setAdd(false);
-        fileEntity1.setTime("10");
-        fileEntity1.setSize("2M");
-        fileEntity1.setName("a");
-        fileEntity1.setFormat("图片");
-        fileEntity1.setPath("D:\\Documents\\Pictures\\test\\test1.jpg");
-        fileEntityList.add(fileEntity1);
-
-        ImageAndVideoEntity.FileEntity fileEntity2 = new ImageAndVideoEntity.FileEntity();
-        fileEntity2.setAdd(false);
-        fileEntity2.setTime("10");
-        fileEntity2.setSize("2M");
-        fileEntity2.setName("b");
-        fileEntity2.setFormat("图片");
-        fileEntity2.setPath("D:\\Documents\\Pictures\\test\\test2.jpg");
-        fileEntityList.add(fileEntity2);
-
-        ImageAndVideoEntity.FileEntity fileEntity3 = new ImageAndVideoEntity.FileEntity();
-        fileEntity3.setAdd(false);
-        fileEntity3.setTime("10");
-        fileEntity3.setSize("2M");
-        fileEntity3.setName("c");
-        fileEntity3.setFormat("图片");
-        fileEntity3.setPath("D:\\Documents\\Pictures\\test\\test3.jpg");
-        fileEntityList.add(fileEntity3);
-
-        ImageAndVideoEntity.FileEntity fileEntity4 = new ImageAndVideoEntity.FileEntity();
-        fileEntity4.setAdd(false);
-        fileEntity4.setTime("10");
-        fileEntity4.setSize("2M");
-        fileEntity4.setName("d");
-        fileEntity4.setFormat("图片");
-        fileEntity4.setPath("D:\\Documents\\Pictures\\test\\test3.jpg");
-        fileEntityList.add(fileEntity4);
-
-        ImageAndVideoEntity.FileEntity fileEntity5 = new ImageAndVideoEntity.FileEntity();
-        fileEntity5.setAdd(false);
-        fileEntity5.setTime("10");
-        fileEntity5.setSize("2M");
-        fileEntity5.setName("e");
-        fileEntity5.setFormat("图片");
-        fileEntity5.setPath("D:\\Documents\\Pictures\\test\\test3.jpg");
-        fileEntityList.add(fileEntity5);
-
-        PlayListEntity entity1 = new PlayListEntity();
-        entity1.setChoice(true);
-        entity1.setName("播放列表");
-        playListEntityList.add(entity1);
-        entity1.setFileEntityList(fileEntityList);
-
-        mImageAndVideoEntity.setFiles(fileEntityList);
-    }
     private void notifyUpdateData() {
         plv.updateFileEntityList(fileEntityArrayList);
     }
-    private void back(){
+
+    private void back() {
         Intent intent = new Intent();
         intent.putExtra(Constant.ACTION_BACK, (Serializable) mTempFileEntityList);
-        setResult(RESULT_OK,intent);
+        setResult(RESULT_OK, intent);
         finish();
     }
+
     @Override
     public void onBackPressed() {
         back();
     }
 
-    @OnClick({R.id.ll_video_list, R.id.ll_image_list, R.id.ll_upload,R.id.ll_back})
+    @OnClick({R.id.ll_video_list, R.id.ll_image_list, R.id.ll_upload, R.id.ll_back})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_video_list:  //视频
@@ -291,18 +246,18 @@ public class ResourceManagerActivity extends BaseActivity {
                 setImageAndVideoList();
                 Intent intent = new Intent(ResourceManagerActivity.this, ResourceListActivity.class);
                 intent.putExtra(Constant.FLAG_PLAY_TYPE, Constant.PLAY_TYPE_VIDEO);
-//                intent.putExtra(Constant.FLAG_PLAY_DATA, (Serializable) getResFromPlayList(true));
+                //                intent.putExtra(Constant.FLAG_PLAY_DATA, (Serializable) getResFromPlayList(true));
                 intent.putExtra(Constant.FLAG_PLAY_DATA, (Serializable) videos);
-                startActivityForResult(intent,REQUEST_CODE_FOR_LIST);
+                startActivityForResult(intent, REQUEST_CODE_FOR_LIST);
                 break;
             case R.id.ll_image_list:  //图片
                 updateDataFromPlv();
                 setImageAndVideoList();
                 Intent i = new Intent(ResourceManagerActivity.this, ResourceListActivity.class);
                 i.putExtra(Constant.FLAG_PLAY_TYPE, Constant.PLAY_TYPE_IMAGE);
-//                i.putExtra(Constant.FLAG_PLAY_DATA, (Serializable) getResFromPlayList(false));
+                //                i.putExtra(Constant.FLAG_PLAY_DATA, (Serializable) getResFromPlayList(false));
                 i.putExtra(Constant.FLAG_PLAY_DATA, (Serializable) images);
-                startActivityForResult(i,REQUEST_CODE_FOR_LIST);
+                startActivityForResult(i, REQUEST_CODE_FOR_LIST);
                 break;
             case R.id.ll_upload:   //上传
                 commit();
@@ -314,7 +269,8 @@ public class ResourceManagerActivity extends BaseActivity {
                 break;
         }
     }
-    private void commit(){
+
+    private void commit() {
         try {
             //将更改顺序或者添加视图的list保存到fileEntityArrayList中
             updateDataFromPlv();
@@ -324,15 +280,15 @@ public class ResourceManagerActivity extends BaseActivity {
             String resultJson = gson.toJson(mImageAndVideoEntity);
             byte[] resultJsonBytes = resultJson.getBytes("UTF-8");
             int dataLength = resultJsonBytes.length;
-            int byteAllLength = 5+dataLength;
+            int byteAllLength = 5 + dataLength;
             //                    MyLogger.i(TAG,"commit data length ... "+dataLength);
-            MyLogger.i(TAG,"commit data content ... "+resultJson);
+            MyLogger.i(TAG, "commit data content ... " + resultJson);
             byte[] transBytes = new byte[byteAllLength];
             System.arraycopy(resultJsonBytes, 0, transBytes, 5, dataLength);
             //填充操作type
             transBytes[0] = CommunicationKey.REQUEST_UPDATE_LIST;
             //填充dataLength
-            Tools.int2BytesExtra(dataLength,transBytes);
+            Tools.int2BytesExtra(dataLength, transBytes);
             //发送字节数组
             ClientByteSocketManager.getInstance().sendMsg(transBytes);
         } catch (Exception e) {
@@ -373,7 +329,6 @@ public class ResourceManagerActivity extends BaseActivity {
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -398,8 +353,7 @@ public class ResourceManagerActivity extends BaseActivity {
                 maxSelectable(9).
                 addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K)).
                 gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size)).
-                restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                .thumbnailScale(0.85f).
+                restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED).thumbnailScale(0.85f).
                 imageEngine(new Glide4Engine()).
                 forResult(REQUEST_CODE_CHOOSE);
     }
@@ -414,51 +368,45 @@ public class ResourceManagerActivity extends BaseActivity {
             } else if (Constant.ACTION_SHOW_SETTING_FROM_RESMANAGER.equals(intent.getAction())) {
                 int position = intent.getIntExtra(Constant.KEY_SHOW_SETTING, -1);
                 if (position >= 0) {
-//                    ToastUtils.showToast(context,"onReceive pos ... "+position);
+                    //                    ToastUtils.showToast(context,"onReceive pos ... "+position);
                     MaterialDialog.Builder builder = new MaterialDialog.Builder(ResourceManagerActivity.this);
-                    MaterialDialog alertDialog = builder
-                            .canceledOnTouchOutside(true)
+                    MaterialDialog alertDialog = builder.canceledOnTouchOutside(true)
                             .cancelable(true)
                             .items(R.array.setting)
-                            .itemsColor(context.getResources().getColor(R.color.device_text))
+                            .itemsColor(ContextCompat.getColor(ResourceManagerActivity.this,R.color.device_text))
                             .itemsCallback(new MaterialDialog.ListCallback() {
-                                @Override
-                                public void onSelection(MaterialDialog dialog, View itemView, int pos, CharSequence text) {
-                                    //编辑显示时长
-                                    if (pos == 0) {
-                                        plv.openEditDialog(position);
-                                    }
-                                    //下载
-                                    else if (pos == 1) {
-                                        ClientByteSocketManager.getInstance().addDownloadFileHandler(handler);
-                                        plv.openDownloadDialog(position);
-                                    }
-                                    dialog.dismiss();
-                                }
-                            })
-                            .build();
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View itemView, int pos, CharSequence text) {
+                            //编辑显示时长
+                            if (pos == 0) {
+                                plv.openEditDialog(position);
+                            }
+                            //下载
+                            else if (pos == 1) {
+                                ClientByteSocketManager.getInstance().addDownloadFileHandler(handler);
+                                plv.openDownloadDialog(position);
+                            }
+                            dialog.dismiss();
+                        }
+                    }).build();
                     alertDialog.show();
                 }
-            }else if (Constant.ACTION_ADD_IMAGE.equals(intent.getAction())) {
+            } else if (Constant.ACTION_ADD_IMAGE.equals(intent.getAction())) {
                 ResourceManagerActivityPermissionsDispatcher.checkPermissionWithPermissionCheck(ResourceManagerActivity.this);
-            }else if (Constant.ACTION_SHOW_PROGRESSBAR.equals(intent.getAction())) {
+            } else if (Constant.ACTION_SHOW_PROGRESSBAR.equals(intent.getAction())) {
                 myProgressbar.showBar(BaseUtils.getStringByResouceId(R.string.download_remind));
-            }else if (Constant.ACTION_REMOVE_RES.equals(intent.getAction())) { //删除的资源文件
+            } else if (Constant.ACTION_REMOVE_RES.equals(intent.getAction())) { //删除的资源文件
                 ImageAndVideoEntity.FileEntity fileEntity = (ImageAndVideoEntity.FileEntity) intent.getSerializableExtra(Constant.FLAG_REMOVE_IMAGE);
-                if (fileEntity.getFormat().equals("视频")
-                        && videos.contains(fileEntity)
-                        && fileEntityArrayList.contains(fileEntity)) {
+                if (fileEntity.getFormat().equals("视频") && videos.contains(fileEntity) && fileEntityArrayList.contains(fileEntity)) {
                     videos.remove(fileEntity);
                     fileEntityArrayList.remove(fileEntity);
-                }else if (fileEntity.getFormat().equals("图片")
-                        && images.contains(fileEntity)
-                        && fileEntityArrayList.contains(fileEntity)) {
+                } else if (fileEntity.getFormat().equals("图片") && images.contains(fileEntity) && fileEntityArrayList.contains(fileEntity)) {
                     images.remove(fileEntity);
                     fileEntityArrayList.remove(fileEntity);
                 }
                 if (fileEntityArrayList.size() == 0) {
                     setEmptyView();
-                }else{
+                } else {
                     setNotEmptyView();
                 }
             }
@@ -533,48 +481,143 @@ public class ResourceManagerActivity extends BaseActivity {
     //////////////////////////////////////////////////////////////////////
 
 
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_CANCELED) {
 
-        }
-        else if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
-            List<String> stringList = Matisse.obtainPathResult(data);
+        } else if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+            List<Uri> uriList = Matisse.obtainResult(data);
             boolean isNeedRemind = false;
-            for (String path : stringList){
-                File file = new File(path);
-                String name = file.getName();
-                long num = (file.length()/(1024*1024)) + 1;
-                if (name.contains(".mp4")) {
-                    if (num > Constant.UPLOAD_VIDEO_MAX_LENGTH) {
-                        isNeedRemind = true;
-                        continue;
-                    }
-                } else if (name.contains(".jpg") || name.contains(".jpeg")) {
-                    if (num > Constant.UPLOAD_IMAGE_MAX_LENGTH) {
-                        isNeedRemind = true;
-                        continue;
-                    }
+            for (Uri uri : uriList) {
+                if (uri == null) {
+                    continue;
                 }
-                addData(path);
+                final String scheme = uri.getScheme();
+                if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+                    String mime = BaseUtils.getMimeTypeByUri(ResourceManagerActivity.this,uri);
+                    long length = BaseUtils.getFileLengthByUri(ResourceManagerActivity.this,uri);
+                    long num = (length / (1024 * 1024)) + 1;
+                    if (RemoteConst.MP4.equals(mime)) {
+                        if (num > Constant.UPLOAD_VIDEO_MAX_LENGTH) {
+                            isNeedRemind = true;
+                            continue;
+                        }
+                    } else if (RemoteConst.JPG.equals(mime)|| RemoteConst.JPEG.equals(mime)) {
+                        if (num > Constant.UPLOAD_IMAGE_MAX_LENGTH) {
+                            isNeedRemind = true;
+                            continue;
+                        }
+                    }
+//                    addData(path);
+                    Uri mIri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                    String[] projection = new String[]{MediaStore.Images.Media._ID,MediaStore.Images.Media.DISPLAY_NAME,MediaStore.Images.Media.SIZE};
+                    String selection = MediaStore.Images.Media._ID + "=?";
+                    int id = (int) ContentUris.parseId(uri);
+                    String idStr = String.valueOf(id);
+                    String[] args = new String[]{idStr};
+                    String format = RemoteConst.IMAGE;
+                    if (RemoteConst.MP4.equals(mime)) {
+                        format = RemoteConst.VIDEO;
+                        mIri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                        projection = new String[]{MediaStore.Video.Media._ID,MediaStore.Video.Media.DISPLAY_NAME,MediaStore.Video.Media.SIZE,MediaStore.Video.Media.DURATION};
+                        selection = MediaStore.Video.Media._ID + "=?";
+                    }
+                    ContentResolver cr = ResourceManagerActivity.this.getContentResolver();
+                    String displayName = "";
+                    long size = 0;
+                    int duration = 0;
+                    Cursor cursor = cr.query(mIri, projection, selection, args, null);
+                    if (cursor != null) {
+                        while(cursor.moveToNext()){
+                            int _id = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID));
+                            if (id == _id) {
+                                displayName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
+                                size= cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media.SIZE));
+                                if (RemoteConst.MP4.equals(mime)) {
+                                    duration = cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.DURATION));
+                                }
+                                Log.d(TAG, "displayName ... "+displayName);
+                                Log.d(TAG, "size ... "+size);
+                                Log.d(TAG, "duration ... "+duration);
+                            }
+                        }
+                        cursor.close();
+                    }
+                    if (!haveSameName(uri,displayName)) {
+                        ImageAndVideoEntity.FileEntity fileEntity = new ImageAndVideoEntity.FileEntity();
+                        fileEntity.setAdd(true);
+                        fileEntity.setUriStr(uri.toString());
+                        int minute = 0, sec = 0;
+                        String finalTime = "";
+                        if (RemoteConst.VIDEO.equals(format)) {
+                            minute = duration / 1000 / 60;
+                            sec = duration / 1000 % 60;
+                            String minuteStr = String.valueOf(minute);
+                            if (minuteStr.length() == 1) {
+                                minuteStr = "0" + minuteStr;
+                            }
+                            String secStr = String.valueOf(sec);
+                            if (secStr.length() == 1) {
+                                secStr = "0" + secStr;
+                            }
+                            finalTime = minuteStr + ":" + secStr;
+                            fileEntity.setPlayTime(finalTime);
+                            //停留时长
+                            MyLogger.i(TAG, "time ... " + duration);
+                            fileEntity.setTime((duration / 1000) + "");
+                        } else if (RemoteConst.IMAGE.equals(format)) {
+                            //停留时长
+                            fileEntity.setTime(DEFAULT_IMAGE_DURATION);
+                        }
+                        fileEntity.setName(displayName);
+                        fileEntity.setFormat(format);
+                        fileEntity.setSize(ConvertUtils.byte2FitMemorySize(size));
+                        fileEntityArrayList.add(fileEntity);
+                    }
+                } else {
+                    continue;
+                }
             }
+            plv.updateFileEntityList(fileEntityArrayList);
             if (isNeedRemind) {
-                Toast.makeText(ResourceManagerActivity.this,BaseUtils.getStringByResouceId(R.string.file_have_limit),Toast.LENGTH_LONG).show();
+                Toast.makeText(ResourceManagerActivity.this, BaseUtils.getStringByResouceId(R.string.file_have_limit), Toast.LENGTH_LONG).show();
             }
             setImageAndVideoList();
-            if (fileEntityArrayList.size()>0) {
+            if (fileEntityArrayList.size() > 0) {
                 setNotEmptyView();
             }
-        }else if (requestCode == REQUEST_CODE_FOR_LIST && resultCode == RESULT_OK) {
-            boolean isVideo = data.getBooleanExtra(Constant.ACTION_IS_VIDEO,true);
-            List<ImageAndVideoEntity.FileEntity> list =
-                    (ArrayList<ImageAndVideoEntity.FileEntity>) data.getSerializableExtra(Constant.ACTION_BACK);
+//            List<String> stringList = Matisse.obtainPathResult(data);
+//            boolean isNeedRemind = false;
+//            for (String path : stringList) {
+//                File file = new File(path);
+//                String name = file.getName();
+//                long num = (file.length() / (1024 * 1024)) + 1;
+//                if (name.contains(".mp4")) {
+//                    if (num > Constant.UPLOAD_VIDEO_MAX_LENGTH) {
+//                        isNeedRemind = true;
+//                        continue;
+//                    }
+//                } else if (name.contains(".jpg") || name.contains(".jpeg")) {
+//                    if (num > Constant.UPLOAD_IMAGE_MAX_LENGTH) {
+//                        isNeedRemind = true;
+//                        continue;
+//                    }
+//                }
+//                addData(path);
+//            }
+//            if (isNeedRemind) {
+//                Toast.makeText(ResourceManagerActivity.this, BaseUtils.getStringByResouceId(R.string.file_have_limit), Toast.LENGTH_LONG).show();
+//            }
+//            setImageAndVideoList();
+//            if (fileEntityArrayList.size() > 0) {
+//                setNotEmptyView();
+//            }
+        } else if (requestCode == REQUEST_CODE_FOR_LIST && resultCode == RESULT_OK) {
+            boolean isVideo = data.getBooleanExtra(Constant.ACTION_IS_VIDEO, true);
+            List<ImageAndVideoEntity.FileEntity> list = (ArrayList<ImageAndVideoEntity.FileEntity>) data.getSerializableExtra(Constant.ACTION_BACK);
             updateDataFromPlv();
-            if (list!=null && list.size()>0) {
+            if (list != null && list.size() > 0) {
                 String format = list.get(0).getFormat();
                 ArrayList<ImageAndVideoEntity.FileEntity> temp = new ArrayList<>();
                 for (int j = 0; j < fileEntityArrayList.size(); j++) {
@@ -596,7 +639,7 @@ public class ResourceManagerActivity extends BaseActivity {
                 setImageAndVideoList();
                 if (fileEntityArrayList.size() == 0) {
                     setEmptyView();
-                }else{
+                } else {
                     setNotEmptyView();
                 }
                 plv.updateFileEntityList(fileEntityArrayList);
@@ -611,9 +654,9 @@ public class ResourceManagerActivity extends BaseActivity {
         fileEntityArrayList.addAll(list);
     }
 
-    private void addData(String path){
+    private void addData(String path) {
         File file = new File(path);
-        if (file.exists()&&!haveSameName(path)) {
+        if (file.exists() && !haveSameName(path)) {
             try {
                 FileInputStream fis = null;
                 try {
@@ -626,10 +669,9 @@ public class ResourceManagerActivity extends BaseActivity {
                     byte[] results = bos.toByteArray();
                     ImageAndVideoEntity.FileEntity fileEntity = new ImageAndVideoEntity.FileEntity();
                     fileEntity.setAdd(true);
-                    fileEntity.setPath(path);
                     String name = file.getName();
                     String format = "";
-                    int minute = 0,sec = 0;
+                    int minute = 0, sec = 0;
                     String finalTime = "";
                     if (name.contains(".mp4")) {
                         format = "视频";
@@ -648,13 +690,13 @@ public class ResourceManagerActivity extends BaseActivity {
                         finalTime = minuteStr + ":" + secStr;
                         fileEntity.setPlayTime(finalTime);
                         //停留时长
-                        MyLogger.i(TAG,"time ... "+time);
-                        fileEntity.setTime((time/1000)+"");
-                    }else if (name.contains(".jpg")) {
+                        MyLogger.i(TAG, "time ... " + time);
+                        fileEntity.setTime((time / 1000) + "");
+                    } else if (name.contains(".jpg")) {
                         format = "图片";
                         //停留时长
                         fileEntity.setTime("10");
-                    }else if (name.contains(".jpeg")) {
+                    } else if (name.contains(".jpeg")) {
                         format = "图片";
                         //停留时长
                         fileEntity.setTime("10");
@@ -669,27 +711,40 @@ public class ResourceManagerActivity extends BaseActivity {
                     e.printStackTrace();
                 }
                 plv.updateFileEntityList(fileEntityArrayList);
-            } catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
     /**
      * 检查是否有重名
+     *
      * @param path /storage/emulated/0/1520834082496.jpg
      * @return
      */
-    private boolean haveSameName(String path){
-        String str = path.substring(path.lastIndexOf("/")+1);
+    private boolean haveSameName(String path) {
+        String str = path.substring(path.lastIndexOf("/") + 1);
         //        MyLogger.i(TAG,"haveSameName str ... "+str);
-        for (ImageAndVideoEntity.FileEntity fileEntity:fileEntityArrayList){
+        for (ImageAndVideoEntity.FileEntity fileEntity : fileEntityArrayList) {
             if (fileEntity.getName().contains(str)) {
-                Toast.makeText(ResourceManagerActivity.this,"文件名【"+str+"】重复，请修改文件名称",Toast.LENGTH_LONG).show();
+                Toast.makeText(ResourceManagerActivity.this, "文件名【" + str + "】重复，请修改文件名称", Toast.LENGTH_LONG).show();
                 return true;
             }
         }
         return false;
     }
+
+    private boolean haveSameName(Uri uri,String displayName){
+        for (ImageAndVideoEntity.FileEntity fileEntity : fileEntityArrayList) {
+                if(displayName.equals(fileEntity.getName())) {
+                ToastUtils.showToast(ResourceManagerActivity.this,"文件名【" + displayName + "】重复，请修改文件名称");
+                return true;
+            }
+        }
+        return false;
+    }
+
     public long getMediaLength(String strMediaPath) {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         mmr.setDataSource(strMediaPath);
@@ -697,4 +752,8 @@ public class ResourceManagerActivity extends BaseActivity {
         long timeInmillisec = Long.parseLong(time);
         return timeInmillisec;
     }
+
+
+
+
 }

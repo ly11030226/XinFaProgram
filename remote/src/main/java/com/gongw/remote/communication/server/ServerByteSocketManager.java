@@ -90,6 +90,10 @@ public class ServerByteSocketManager {
         CURRENT_FILE_PATH = path;
     }
 
+    public void setFileInfo(String name){
+        CURRENT_FILE_NAME = name;
+    }
+
     private class ServerByteSocketRunnable implements Runnable{
         private ServerSocket serverSocket;
         private int port;

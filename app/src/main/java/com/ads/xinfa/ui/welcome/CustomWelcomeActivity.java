@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 
 public class CustomWelcomeActivity extends WelcomeActivity {
@@ -234,7 +235,6 @@ public class CustomWelcomeActivity extends WelcomeActivity {
             String path = file.getAbsolutePath();
             MyLogger.i(TAG, "File path ... " + file.getAbsolutePath());
             FileInputStream fis = new FileInputStream(file);
-            ;
             byte[] buffer = new byte[1024];
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             while (fis.read(buffer) != -1) {
@@ -243,7 +243,8 @@ public class CustomWelcomeActivity extends WelcomeActivity {
             byte[] results = bos.toByteArray();
             fileEntity = new ImageAndVideoEntity.FileEntity();
             fileEntity.setAdd(false);
-            fileEntity.setPath(path);
+            URI u = file.toURI();
+            fileEntity.setUriStr(u.toString());
             String name = file.getName();
             String format = "";
             int minute = 0, sec = 0;

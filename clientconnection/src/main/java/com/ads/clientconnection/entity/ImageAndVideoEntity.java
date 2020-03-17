@@ -32,7 +32,7 @@ public class ImageAndVideoEntity implements Serializable {
         return "ImageAndVideoEntity{" + "info=" + info + ", files=" + files + '}';
     }
 
-    public static class Info implements Serializable{
+    public static class Info implements Serializable {
         private String cIp;
         private String cPort;
         private String cName;
@@ -129,15 +129,24 @@ public class ImageAndVideoEntity implements Serializable {
             return "Info{" + "cIp='" + cIp + '\'' + ", cPort='" + cPort + '\'' + ", cName='" + cName + '\'' + ", width='" + width + '\'' + ", height='" + height + '\'' + ", volume='" + volume + '\'' + ", audioPath='" + audioPath + '\'' + '}';
         }
     }
-    public static class FileEntity implements Serializable{
+
+    public static class FileEntity implements Serializable {
         private String format; //图片 or 视频
-        private String path;
         private String time; //停留时长
         private String name;
         private String size;
         private String playTime; //播放时长
+        private String uriStr;  //Android Q 以后需要用到Uri而不能用path
         private boolean isAdd;  //是否是新添加的
 
+
+        public String getUriStr() {
+            return uriStr;
+        }
+
+        public void setUriStr(String uriStr) {
+            this.uriStr = uriStr;
+        }
 
         public boolean isAdd() {
             return isAdd;
@@ -179,14 +188,6 @@ public class ImageAndVideoEntity implements Serializable {
             this.format = format;
         }
 
-        public String getPath() {
-            return path;
-        }
-
-        public void setPath(String path) {
-            this.path = path;
-        }
-
         public String getTime() {
             return time;
         }
@@ -197,7 +198,7 @@ public class ImageAndVideoEntity implements Serializable {
 
         @Override
         public String toString() {
-            return "FileEntity{" + "format='" + format + '\'' + ", path='" + path + '\'' + ", time='" + time + '\'' + ", name='" + name + '\'' + ", size='" + size + '\'' + ", playTime='" + playTime + '\'' + ", isAdd=" + isAdd + '}';
+            return "FileEntity{" + "format='" + format + '\'' + ", time='" + time + '\'' + ", name='" + name + '\'' + ", size='" + size + '\'' + ", playTime='" + playTime + '\'' + ", uriStr='" + uriStr + '\'' + ", isAdd=" + isAdd + '}';
         }
     }
 }

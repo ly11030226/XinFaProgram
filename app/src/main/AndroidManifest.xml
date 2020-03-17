@@ -34,7 +34,7 @@
         <activity
             android:name=".ui.modifyPsd.ModifyPsdActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode = "stateAlwaysHidden|adjustPan"
             />
@@ -53,7 +53,7 @@
         <activity
             android:name=".ui.help.HelpActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".ui.wifiDirect.WifiDirectActivity"
@@ -68,7 +68,7 @@
         <activity
             android:name=".ui.lanConnection.LanConnectionHostActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".ui.fragmentMain.FragmentMainActivity"
@@ -84,7 +84,7 @@
         <activity
             android:name=".ui.welcome.CustomWelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="landscape"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

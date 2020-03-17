@@ -18,7 +18,7 @@ import java.io.IOException;
 public class SettingManager {
     private static final String TAG = "SettingManager";
     public static final String SETTING_TXT = "setting.txt";
-    public static final String DEFAULT_SETTING = "url-http://www.sztiye.com/download/xinfa_control_1.0.0.apk|udpPort-8100|serverPort-60001|floatViewOpen-true|password-123456";
+    public static final String DEFAULT_SETTING = "url-http://www.sztiye.com/download/xinfa_control_1.1.0.apk|udpPort-8100|serverPort-60001|floatViewOpen-true|password-123456";
 
     private SettingManager(){}
     private static SettingManager instance;

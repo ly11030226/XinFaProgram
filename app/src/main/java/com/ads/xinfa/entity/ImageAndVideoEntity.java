@@ -131,13 +131,18 @@ public class ImageAndVideoEntity implements Serializable {
     }
     public static class FileEntity implements Serializable{
         private String format; //图片 or 视频
-        private String path;
-        private String time; //停留时长
-        private String name;
-        private String size;
-        private String playTime; //播放时长
         private boolean isAdd;  //是否是新添加的
+//        private String path;
+        private String name;   //media的名字
+        private String size;  //media的大小
+        private String time; //停留时长
+        private String uriStr;   //media 的Uri
+        private String playTime; //播放时长
 
+
+        public void setUriStr(String uriStr) {
+            this.uriStr = uriStr;
+        }
 
         public boolean isAdd() {
             return isAdd;
@@ -179,13 +184,10 @@ public class ImageAndVideoEntity implements Serializable {
             this.format = format;
         }
 
-        public String getPath() {
-            return path;
+        public String getUriStr() {
+            return uriStr;
         }
 
-        public void setPath(String path) {
-            this.path = path;
-        }
 
         public String getTime() {
             return time;
@@ -195,9 +197,10 @@ public class ImageAndVideoEntity implements Serializable {
             this.time = time;
         }
 
+
         @Override
         public String toString() {
-            return "FileEntity{" + "format='" + format + '\'' + ", path='" + path + '\'' + ", time='" + time + '\'' + ", name='" + name + '\'' + ", size='" + size + '\'' + ", playTime='" + playTime + '\'' + ", isAdd=" + isAdd + '}';
+            return "FileEntity{" + "format='" + format + '\'' + ", isAdd=" + isAdd + ", name='" + name + '\'' + ", size='" + size + '\'' + ", time='" + time + '\'' + ", uriStr='" + uriStr + '\'' + ", playTime='" + playTime + '\'' + '}';
         }
     }
 }

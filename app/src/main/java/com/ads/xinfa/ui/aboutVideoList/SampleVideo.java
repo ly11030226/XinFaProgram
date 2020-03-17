@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ads.xinfa.R;
+import com.ads.xinfa.base.FileManager;
 import com.ads.xinfa.entity.ImageAndVideoEntity;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
@@ -194,7 +195,7 @@ public class SampleVideo extends StandardGSYVideoPlayer {
      */
     public boolean setUp(List<ImageAndVideoEntity.FileEntity> entity, boolean cacheWithPlay, String title) {
         mUrlList = entity;
-        return setUp(entity.get(mSourcePosition).getPath(), cacheWithPlay, title);
+        return setUp(FileManager.UPLOAD_DIR+entity.get(mSourcePosition).getName(), cacheWithPlay, title);
     }
 
     /**
@@ -208,7 +209,7 @@ public class SampleVideo extends StandardGSYVideoPlayer {
      */
     public boolean setUp(List<ImageAndVideoEntity.FileEntity> entity, boolean cacheWithPlay, File cachePath, String title) {
         mUrlList = entity;
-        return setUp(entity.get(mSourcePosition).getPath(), cacheWithPlay, cachePath, title);
+        return setUp(FileManager.UPLOAD_DIR+entity.get(mSourcePosition).getName(), cacheWithPlay, cachePath, title);
     }
 
     @Override

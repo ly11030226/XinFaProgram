@@ -358,7 +358,7 @@ public class ResourceControlActivity extends BaseActivity {
                     byte[] results = bos.toByteArray();
                     ImageAndVideoEntity.FileEntity fileEntity = new ImageAndVideoEntity.FileEntity();
                     fileEntity.setAdd(true);
-                    fileEntity.setPath(path);
+//                    fileEntity.setPath(path);
                     String name = file.getName();
                     String format = "";
                     int minute = 0,sec = 0;

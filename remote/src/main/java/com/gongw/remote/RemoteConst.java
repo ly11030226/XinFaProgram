@@ -91,4 +91,15 @@ public class RemoteConst {
 	 */
 	public static final int MODIFY_PSD_FAIL = 0X42;
 
+	/**
+	 * 轮播文件格式
+	 */
+	public static final String MP4 = "mp4";
+	public static final String JPG = "jpg";
+	public static final String JPEG = "jpeg";
+
+	public static final String VIDEO = "视频";
+	public static final String IMAGE = "图片";
+
+
 }

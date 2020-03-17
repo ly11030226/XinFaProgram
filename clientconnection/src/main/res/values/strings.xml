@@ -52,7 +52,7 @@
 
     <string name="do_save">保存</string>
     <string name="video_or_image_is_empty">广告机还没有%s资源</string>
-    <string name="file_have_limit">注：请不要选择视频大于100M，图片大于5M的文件</string>
+    <string name="file_have_limit">注：请不要选择视频大于800M，图片大于5M的文件</string>
 
     <string name="is_searching">正在搜索...</string>
     <string name="is_uploading">正在上传...</string>
@@ -72,6 +72,7 @@
     <string name="connect_psd">请输入连接机器的密码</string>
     <string name="psd_is_error">密码输入有误</string>
     <string name="connect_time_out">连接广告机超时，请重试</string>
+    <string name="press_again_exit">再按一次退出</string>
 
 
 </resources>

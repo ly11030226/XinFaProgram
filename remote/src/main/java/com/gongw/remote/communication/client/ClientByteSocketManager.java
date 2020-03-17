@@ -1,10 +1,13 @@
 package com.gongw.remote.communication.client;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -20,6 +23,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -183,8 +187,8 @@ public class ClientByteSocketManager {
                         uiHandler.sendMessage(msg);
                         break;
                     case FOUTH:
-                        String path = getResultString(buffer);
-                        transferFile(path);
+                        String uriStr = getResultString(buffer);
+                        transferFile(uriStr);
                         break;
                     case SIXTH:
                         sendUploadFinishMsg();
@@ -302,16 +306,15 @@ public class ClientByteSocketManager {
         }
 
         /**
-         * 文件路径
-         *
-         * @param filePath
+         * 文件路径 Uri形式
+         * @param uriStr
          */
-        private synchronized void transferFile(final String filePath) {
-            Log.i(TAG, "ClientSocketManager transferFile path ... " + filePath);
+        private synchronized void transferFile(final String uriStr) {
+            Log.i(TAG, "ClientSocketManager transferFile uriStr ... " + uriStr);
             //单线程去传输视图 run中加入for循环
             Message msg = writeHandler.obtainMessage();
             msg.what = 111;
-            msg.obj = filePath;
+            msg.obj = uriStr;
             writeHandler.sendMessage(msg);
         }
 
@@ -385,44 +388,57 @@ public class ClientByteSocketManager {
             super.handleMessage(msg);
             try {
                 if (msg.what == 111) {
-                    String filePath = (String) msg.obj;
-                    writeFileByBytes(filePath);
+                    String uriStr = (String) msg.obj;
+                    writeFileByBytes(uriStr);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        private void writeFileByBytes(String path) throws IOException {
-            Log.i(TAG, "write file start  path ... " + path);
+        private void writeFileByBytes(String uriStr) throws IOException {
+            Log.i(TAG, "write file start  path ... " + uriStr);
             FileInputStream fileInputStream = null;
-            File file = new File(path);
-            Log.i(TAG, "file is exist ... " + file.exists());
-            try {
-                if (file.exists()) {
-                    fileInputStream = new FileInputStream(file);
-                    byte[] bytes = new byte[1024 * 8];
-                    int length = 0;
-                    int i = 1;
-                    byte[] b = new byte[5];
-                    //组装数组前5个字节
-                    b[0] = FIFTH;
-                    int totalLen = (int) file.length();
-                    Tools.int2BytesExtra(totalLen, b);
-                    //将整个数组写入
-                    dos.write(b);
-                    dos.flush();
-                    while ((length = fileInputStream.read(bytes, 0, bytes.length)) != -1) {
-                        //                        Log.i(TAG,"length ... "+length+"  fileLength ... "+totalLen);
-                        dos.write(bytes, 0, length);
-                        dos.flush();
-//                        Thread.sleep(200);
-                    }
-                    Log.i(TAG, "client file write end");
-                    fileInputStream.close();
-                } else {
-                    Log.e(TAG, "writeFileByBytes file is not exist");
+            Uri uri = Uri.parse(uriStr);
+            final Context c = ClientByteSocketManager.getInstance().context;
+            if (c!=null) {
+                ParcelFileDescriptor pfd = null;
+                ContentResolver cr = c.getContentResolver();
+                try {
+                    pfd  = cr.openFileDescriptor(uri,"r");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
+                if (pfd == null) {
+                    Log.e(TAG, "writeFileByBytes: ParcelFileDescriptor is null");
+                    return;
+                }
+                fileInputStream = new FileInputStream(pfd.getFileDescriptor());
+            }
+            if (fileInputStream == null) {
+                Log.e(TAG, "writeFileByBytes: fileInputStream is null");
+                return;
+            }
+            try {
+                byte[] bytes = new byte[1024 * 8];
+                int length = 0;
+                int i = 1;
+                byte[] b = new byte[5];
+                //组装数组前5个字节
+                b[0] = FIFTH;
+                final int totalLen = fileInputStream.available();
+                Tools.int2BytesExtra(totalLen, b);
+                //将整个数组写入
+                dos.write(b);
+                dos.flush();
+                while ((length = fileInputStream.read(bytes, 0, bytes.length)) != -1) {
+                    //                        Log.i(TAG,"length ... "+length+"  fileLength ... "+totalLen);
+                    dos.write(bytes, 0, length);
+                    dos.flush();
+                    //                        Thread.sleep(200);
+                }
+                Log.i(TAG, "client file write end");
+                fileInputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
                 dos.close();

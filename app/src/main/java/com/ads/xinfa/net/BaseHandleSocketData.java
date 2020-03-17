@@ -3,6 +3,7 @@ package com.ads.xinfa.net;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import com.ads.xinfa.base.FileManager;
 import com.ads.xinfa.base.MyLogger;
@@ -12,10 +13,12 @@ import com.gongw.remote.RemoteConst;
 import com.gongw.remote.communication.CommunicationKey;
 import com.gongw.remote.communication.server.ServerByteSocketManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 
 /**
@@ -36,11 +39,11 @@ public abstract class BaseHandleSocketData{
     private void transfer(ImageAndVideoEntity.FileEntity fileEntity){
         try {
             byte[] transBytes = ServerByteSocketManager.getInstance().makeBytes
-                    (fileEntity.getPath(),CommunicationKey.RESPONSE_UPDATE_LIST);
+                    (fileEntity.getUriStr(),CommunicationKey.RESPONSE_UPDATE_LIST);
             //保存要upload的文件信息
             ServerByteSocketManager.getInstance().setFileInfo(
-                    fileEntity.getName(),
-                    fileEntity.getPath());
+                    fileEntity.getName()
+            );
             ServerByteSocketManager.getInstance().sendMsgByte(transBytes);
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,15 +115,25 @@ public abstract class BaseHandleSocketData{
                 MyLogger.i(TAG,"updateList ... "+json);
                 //弹框提示加载中
                 startUpdateList();
-                ImageAndVideoEntity entity = gson.fromJson(json,ImageAndVideoEntity.class);
-                ArrayList<ImageAndVideoEntity.FileEntity> fileList= entity.getFiles();
-                videoList.clear();
-                if (fileList!=null &&fileList.size()>0) {
-                    videoList.addAll(fileList);
-                    isNeedUploadFile();
+                ImageAndVideoEntity entity = null;
+                try {
+                     entity = gson.fromJson(json,ImageAndVideoEntity.class);
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
+                if (entity!=null) {
+                    ArrayList<ImageAndVideoEntity.FileEntity> fileList= entity.getFiles();
+                    videoList.clear();
+                    if (fileList!=null &&fileList.size()>0) {
+                        videoList.addAll(fileList);
+                        isNeedUploadFile();
+                    }else{
+                        sendFinishInfo();
+                        toastEmptyList();
+                    }
                 }else{
-                    sendFinishInfo();
                     toastEmptyList();
+                    MyLogger.e(TAG,"updateList : gson.fromJson is null");
                 }
             }
 
@@ -136,8 +149,12 @@ public abstract class BaseHandleSocketData{
                     MyLogger.i(TAG,"传输"+path+"成功!!!");
                     synchronized (videoList){
                         for (ImageAndVideoEntity.FileEntity fileEntity : videoList){
+                            Log.d(TAG,"file name "+file.getName());
+                            Log.d(TAG,"fileEntity name "+fileEntity.getName());
                             if (fileEntity.getName().equals(file.getName())) {
-                                fileEntity.setPath(file.getPath());
+                                URI u = file.toURI();
+                                String uriStr = u.toString();
+                                fileEntity.setUriStr(uriStr);
                                 fileEntity.setAdd(false);
                             }
                         }
@@ -156,7 +173,8 @@ public abstract class BaseHandleSocketData{
     private void isNeedUploadFile() {
         boolean hasNew = false;
         for (ImageAndVideoEntity.FileEntity fileEntity : videoList){
-            File file = new File(fileEntity.getPath());
+            String path = FileManager.UPLOAD_DIR+fileEntity.getName();
+            File file = new File (path);
             //新添加的
             if (fileEntity.isAdd()) {
                 if (file.exists()) {
@@ -170,13 +188,9 @@ public abstract class BaseHandleSocketData{
             }
             else {//证明控制端先添加了一个新的文件，然后提交，然后再移动刚提交文件的顺序，
                 // 再次提交，控制端没有来得及更新path
-                if (!file.exists()) {
-                    String path = FileManager.UPLOAD_DIR + file.getName();
-                    file = new File(path);
-                    if (file.exists()) {
-                        fileEntity.setPath(path);
-                    }
-                }
+                URI u = file.toURI();
+                String uriStr = u.toString();
+                fileEntity.setUriStr(uriStr);
             }
         }
         //如果没有新添加的直接更新
