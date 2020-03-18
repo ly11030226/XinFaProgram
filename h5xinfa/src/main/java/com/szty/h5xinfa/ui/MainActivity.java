@@ -18,7 +18,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.ads.utillibrary.utils.ToastUtils;
 import com.liulishuo.filedownloader.BaseDownloadTask;
@@ -858,20 +857,20 @@ public class MainActivity extends AppCompatActivity {
     public static final int PRESS_BACK_BUTTON_INTERVAL = 2*1000;
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                long secondTime = System.currentTimeMillis();
-                if (secondTime - firstTime > PRESS_BACK_BUTTON_INTERVAL) {                                         //如果两次按键时间间隔大于2秒，则不退出
-                    Toast.makeText(this, R.string.press_again_exit, Toast.LENGTH_SHORT).show();
-                    firstTime = secondTime;//更新firstTime
-                    return true;
-                } else {
-                    //两次按键小于2秒时，退出应用
-                    System.exit(0);
-                }
-                break;
-        }
+        // TODO: 2020-03-18 由于已经有onKeyDown方法   这里先不执行“再按一次退出程序”操作  
+//        switch (keyCode) {
+//            case KeyEvent.KEYCODE_BACK:
+//                long secondTime = System.currentTimeMillis();
+//                if (secondTime - firstTime > PRESS_BACK_BUTTON_INTERVAL) {                                         //如果两次按键时间间隔大于2秒，则不退出
+//                    Toast.makeText(this, R.string.press_again_exit, Toast.LENGTH_SHORT).show();
+//                    firstTime = secondTime;//更新firstTime
+//                    return true;
+//                } else {
+//                    //两次按键小于2秒时，退出应用
+//                    System.exit(0);
+//                }
+//                break;
+//        }
         return super.onKeyUp(keyCode, event);
     }
 
