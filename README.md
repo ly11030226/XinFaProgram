@@ -34,7 +34,19 @@ __________________
 __xinfafirstversion:__  
 
 * `v1.0.0(2020/03/17 11:00)`
-    + 新添加了xinfafirstversion项目  
-    <br>
-    <br>
-    <br>
+    + 新添加了xinfafirstversion项目 
+    
+<br>
+#### 分支项目版本信息
+__浦发银行-h5xinfa:__  
+
+* `v1.0.0(2020/03/17 15:10)`  
+    + 在基础项目版本中，添加了浦发银行的HTML文件，软件默认显示浦发银行的HTML    
+  <br>  
+  <br>
+
+___另：浦发银行分支需下载[HTML文件](https://pan.baidu.com/s/1jtuUsKcbQb8MJJX08W_Z5g),然后解压缩到h5xinfa
+项目的 src/main/assets 目录下___ 
+
+<br>
+<br>

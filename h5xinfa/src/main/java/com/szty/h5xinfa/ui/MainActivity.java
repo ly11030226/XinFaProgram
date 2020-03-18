@@ -168,12 +168,12 @@ public class MainActivity extends AppCompatActivity {
                 webView.loadUrl(url);
             } else {
                 //如果 ../szty/page/index.html不存在，则加载assets下的index.html
-//                webView.loadUrl("file:///android_asset/index.html");
+                webView.loadUrl("file:///android_asset/index.html");
             }
         } else {
             //如果 ../szty/page 不存在 则创建page文件夹，然后加载assets下的index.html
             file.mkdirs();
-//            webView.loadUrl("file:///android_asset/index.html");
+            webView.loadUrl("file:///android_asset/index.html");
         }
     }
 
