@@ -41,8 +41,8 @@ __xinfafirstversion:__
 #### 分支项目版本信息
 __浦发银行-h5xinfa:__  
 
-* `v1.0.0(2020/03/17 15:10)`  
-    + 在基础项目版本中，添加了浦发银行的HTML文件，软件默认显示浦发银行的HTML    
+* `v1.0.0(2020/03/17 15:10)`&ensp;&ensp;&ensp;___[下载](https://pan.baidu.com/s/1_3oiOJlHNOJ1GrRratp_WA)___
+    + 在基础项目版本中，添加了浦发银行的HTML文件，软件默认显示浦发银行的HTML。下载后的apk则已经包含了HTML和视频文件，因此大小为300多兆。    
   <br>  
   <br>
 
