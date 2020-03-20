@@ -334,3 +334,7 @@ file=D:\WorkSpace\Git\XinFaProgram\clientconnection\build\outputs\mapping\releas
 sha1=b86851215059b8dd981734efa05242e08f7eb460
 appId=30e93a44bd
 
+file=D:\WorkSpace\Git\XinFaProgram\clientconnection\build\outputs\mapping\release\mapping.txt
+sha1=a80ca5e9044e6881ed002879688c449dbd584e08
+appId=30e93a44bd
+
