@@ -38,7 +38,7 @@ public class Constant {
     public static final String FLAG_PLAY_DATA = "FLAG_PLAY_DATA";
     public static final String FLAG_REMOVE_IMAGE = "FLAG_REMOVE_IMAGE";
 
-    public static final int UPLOAD_VIDEO_MAX_LENGTH = 800;
+    public static final int UPLOAD_VIDEO_MAX_LENGTH = 1024;
     public static final int UPLOAD_IMAGE_MAX_LENGTH = 5;
 
 

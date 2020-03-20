@@ -52,7 +52,7 @@
 
     <string name="do_save">保存</string>
     <string name="video_or_image_is_empty">广告机还没有%s资源</string>
-    <string name="file_have_limit">注：请不要选择视频大于800M，图片大于5M的文件</string>
+    <string name="file_have_limit">注：请不要选择视频大于1024M，图片大于5M的文件</string>
 
     <string name="is_searching">正在搜索...</string>
     <string name="is_uploading">正在上传...</string>
