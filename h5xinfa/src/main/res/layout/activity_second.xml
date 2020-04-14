@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.SecondActivity">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_left"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@mipmap/zbg_no_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/cl_right"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 用来控制比例 -->
+        <RelativeLayout
+            android:id="@+id/rl_temp_left"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/rl_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="0.5" />
+
+        <RelativeLayout
+            android:id="@+id/rl_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rl_temp_left"
+            app:layout_constraintVertical_weight="3.5">
+
+            <com.szty.h5xinfa.view.RollView
+                android:id="@+id/rollview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="32dp" />
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!-- 由于RollView自身有padding属性，因此显示视频的时候会靠下，为了两边对齐这里也采取paddingTop的属性 -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_right"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@mipmap/ybg"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/cl_left"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- 用来控制比例 -->
+        <RelativeLayout
+            android:id="@+id/rl_temp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/cl_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="0.5" />
+
+        <com.szty.h5xinfa.view.MyConstraintLayout
+            android:id="@+id/cl_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingTop="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rl_temp"
+            app:layout_constraintVertical_weight="3.5">
+
+
+            <LinearLayout
+                android:id="@+id/ll_l"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintHorizontal_weight="4"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/rl_r"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.youth.banner.Banner
+                    android:id="@+id/banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="275dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_second"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/rl_r"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/right_bg"
+                android:orientation="vertical"
+                android:weightSum="4"
+                app:layout_constraintBottom_toBottomOf="@+id/ll_l"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@+id/ll_l"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.szty.h5xinfa.view.MyListView
+                    android:id="@+id/myListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="8dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/shape_right_bg"
+                    android:padding="2dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/white"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:src="@mipmap/spd_logo"
+                        android:id="@+id/iv_tuo"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_centerInParent="true"
+                        android:clickable="true" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_main_temp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@+id/ll_l"
+                app:layout_constraintLeft_toLeftOf="@+id/ll_l"
+                app:layout_constraintRight_toRightOf="@id/ll_l"
+                app:layout_constraintTop_toTopOf="@+id/ll_l">
+
+                <com.szty.h5xinfa.view.MyImageView
+                    android:id="@+id/miv_temp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@mipmap/r1" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_bottom_temp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@mipmap/ewm"
+                        android:scaleType="centerCrop" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_rate"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/ll_l"
+                app:layout_constraintLeft_toLeftOf="@+id/ll_l"
+                app:layout_constraintRight_toRightOf="@id/ll_l"
+                app:layout_constraintTop_toTopOf="@+id/ll_l">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="fitXY"
+                        android:src="@mipmap/biaoge" />
+                </ScrollView>
+
+            </RelativeLayout>
+
+
+        </com.szty.h5xinfa.view.MyConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="68dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@mipmap/back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <com.gongwen.marqueen.SimpleMarqueeView
+        android:id="@+id/simpleMarqueeView"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:animateFirstView="true"
+        android:autoStart="true"
+        android:background="@color/white"
+        android:flipInterval="25000"
+        android:inAnimation="@anim/anim_right_in"
+        android:outAnimation="@anim/anim_left_out"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:marqueeAnimDuration="20000"
+        app:smvTextColor="@color/blue_main"
+        app:smvTextEllipsize="end"
+        app:smvTextGravity="center"
+        app:smvTextSingleLine="true"
+        app:smvTextSize="22sp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

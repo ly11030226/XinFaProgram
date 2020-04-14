@@ -5,9 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import java.io.File;
 import java.net.Inet6Address;
@@ -173,4 +178,85 @@ public class BaseUtils {
         }
         return "";
     }
+
+    /**
+     * 获取本地视频的第一帧
+     *
+     * @param localPath
+     * @return
+     */
+    public static Bitmap getLocalVideoBitmap(String localPath) {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+
+            //根据文件路径获取缩略图
+            retriever.setDataSource(localPath);
+            //获得第一帧图片
+            bitmap = retriever.getFrameAtTime();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } finally {
+            retriever.release();
+        }
+        return bitmap;
+    }
+
+    /**
+     * 获取本地视频的第一帧
+     *
+     * @param context
+     * @return
+     */
+    public static Bitmap getLocalVideoBitmap(Context context, Uri uri) {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            //根据文件路径获取缩略图
+            retriever.setDataSource(context,uri);
+            //获得第一帧图片
+            bitmap = retriever.getFrameAtTime();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } finally {
+            retriever.release();
+        }
+        return bitmap;
+    }
+    /**
+     * 得到屏幕信息
+     * getScreenDisplayMetrics().heightPixels 屏幕高
+     * getScreenDisplayMetrics().widthPixels 屏幕宽
+     *
+     * @return
+     */
+    public static DisplayMetrics getScreenDisplayMetrics(Context context) {
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        Display display = manager.getDefaultDisplay();
+        display.getMetrics(displayMetrics);
+
+        return displayMetrics;
+
+    }
+
+    public static int getScreenWidth(Context context){
+        int width = 0;
+        if (context!=null) {
+            DisplayMetrics dm = context.getResources().getDisplayMetrics();
+            width = dm.widthPixels;
+        }
+        return width;
+    }
+
+    public static int getScreenHeight(Context context){
+        int height = 0;
+        if (context!=null) {
+            DisplayMetrics dm = context.getResources().getDisplayMetrics();
+            height = dm.heightPixels;
+        }
+        return height;
+    }
+
 }

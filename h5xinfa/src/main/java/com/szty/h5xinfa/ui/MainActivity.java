@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         try {
             okHttpClient = new OkHttpClient();
@@ -178,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initWebView() {
         webView = findViewById(R.id.web_view);
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE,null);
         /**
          * 如果 app 需要自定义 UA，建议采取在 SDK 默认UA 后追加 app UA 的方式
          * APP_NAME_UA 用户自定义名字
@@ -207,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
         webSetting.setAppCacheMaxSize(Long.MAX_VALUE);
         webSetting.setPluginState(WebSettings.PluginState.ON_DEMAND);
         webSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
+
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
@@ -874,4 +877,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onKeyUp(keyCode, event);
     }
 
+    @Override
+    public void setRequestedOrientation(int requestedOrientation) {
+        return;
+    }
 }
