@@ -32,9 +32,11 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.SecondActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.IndexActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="landscape" />
         <activity
             android:name=".ui.WelcomeActivity"

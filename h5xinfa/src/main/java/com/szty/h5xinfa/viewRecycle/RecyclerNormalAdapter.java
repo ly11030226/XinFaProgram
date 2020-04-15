@@ -1,6 +1,7 @@
 package com.szty.h5xinfa.viewRecycle;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +25,6 @@ public class RecyclerNormalAdapter extends RecyclerView.Adapter {
         this.context = context;
         this.callBack = callBack;
     }
-
-    public void notifyData(List<String> newList){
-        if (newList!=null) {
-            int previousSize = itemDataList.size();
-            itemDataList.clear();
-            notifyItemRangeChanged(0,previousSize);
-            itemDataList.addAll(newList);
-            notifyItemRangeInserted(0,newList.size());
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.list_video_item_normal, parent, false);
@@ -49,6 +39,8 @@ public class RecyclerNormalAdapter extends RecyclerView.Adapter {
         if (itemDataList.size() > 0) {
             boolean isOne = itemDataList.size() == 1;
             String url = itemDataList.get(position % itemDataList.size());
+            Log.i(TAG,"onBindViewHolder itemDataList size ... "+itemDataList.size());
+            Log.i(TAG,"onBindVieHolder url ... "+url);
             recyclerItemViewHolder.onBind(isOne,position, url,callBack);
         }
     }

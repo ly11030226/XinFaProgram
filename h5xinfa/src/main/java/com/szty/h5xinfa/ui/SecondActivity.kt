@@ -45,8 +45,7 @@ class SecondActivity : AppCompatActivity() {
             initBanner()
             initRecyclerView()
             initRightItem()
-            addTouchListener()
-            IjkPlayerManager.setLogLevel(IjkMediaPlayer.IJK_LOG_SILENT);
+//            addTouchListener()
         } catch (e: Exception) {
             e.printStackTrace()
             e.printStackTrace()
@@ -216,6 +215,15 @@ class SecondActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         building.rollview.clear()
+    }
+    override fun onPause() {
+        super.onPause()
+        GSYVideoManager.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        GSYVideoManager.onResume()
     }
 
 }

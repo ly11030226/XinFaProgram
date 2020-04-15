@@ -14,18 +14,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gongwen.marqueen.SimpleMF
 import com.shuyu.gsyvideoplayer.GSYVideoManager
-import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer
 import com.szty.h5xinfa.R
 import com.szty.h5xinfa.databinding.ActivityIndexBinding
 import com.szty.h5xinfa.viewRecycle.MyLinearLayoutManager
 import com.szty.h5xinfa.viewRecycle.RecyclerNormalAdapter
 import com.szty.h5xinfa.viewRecycle.ScrollHelper
-import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.ref.WeakReference
-import kotlin.collections.ArrayList
 
 
 class IndexActivity : AppCompatActivity() {
@@ -78,7 +75,6 @@ class IndexActivity : AppCompatActivity() {
             addListener()
             //第一张是图片 启动定时翻页
             setDataIfFirstIsImage()
-            IjkPlayerManager.setLogLevel(IjkMediaPlayer.IJK_LOG_SILENT);
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -111,8 +107,10 @@ class IndexActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initData() {
+        Log.i(TAG,"initData list size ... ${dataList.size}")
         mRecyclerViewAdapter = RecyclerNormalAdapter(this,dataList,object:PlayCompleteCallBack{
             override fun playComplete(pos: Int) {
+                Log.i(TAG,"playComplete pos ... $pos")
                 building.recyclerview.smoothScrollToPosition(pos+1)
             }
         })
@@ -123,6 +121,7 @@ class IndexActivity : AppCompatActivity() {
             var lastVisibleItem : Int = 0
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                Log.i(TAG,"onScrolled")
                 firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition()
                 lastVisibleItem = mLayoutManager.findLastVisibleItemPosition()
                 mScrolHelper.onScroll(firstVisibleItem,lastVisibleItem,dx,dy)
@@ -130,6 +129,7 @@ class IndexActivity : AppCompatActivity() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 try {
+                    Log.i(TAG,"onScrollStateChanged")
                     if(newState == RecyclerView.SCROLL_STATE_IDLE && firstVisibleItem == lastVisibleItem){
                         handler.removeMessages(AUTO_PLAY)
                         playVideo(mScrolHelper, firstVisibleItem)
@@ -139,7 +139,6 @@ class IndexActivity : AppCompatActivity() {
                 }
             }
         })
-
     }
 
     private fun initRecyclerView() {
@@ -171,15 +170,6 @@ class IndexActivity : AppCompatActivity() {
         building.simpleMarqueeView.visibility = View.GONE
     }
 
-    private fun readAssetsFile(){
-        val am = resources.assets
-        /**di
-         * 读Assets之前清空dataList
-         */
-        dataList.clear()
-        val paths = am.list(relativeAssetspath)
-
-    }
     private fun createSpdFolderIfNeed(){
         val file = getExternalFilesDir(spdPath)
         if(file!!.exists()){
@@ -190,7 +180,7 @@ class IndexActivity : AppCompatActivity() {
             if (number >= 1){
                 dataList.clear()
                 val temp = file.list()!!.asList()
-                var newList = ArrayList<String>()
+//                var newList = ArrayList<String>()
                 var path:String
                 for (i in temp.indices) {
                     val name = temp[i]
@@ -204,11 +194,12 @@ class IndexActivity : AppCompatActivity() {
                                 path
                             }
                         }
-                        newList.add(uri)
+                        dataList.add(uri)
+                        Log.i(TAG,"添加文件 ... $uri")
+//                        newList.add(uri)
                     }
-                    Log.i(TAG,newList[i])
                 }
-                dataList.addAll(newList)
+//                dataList.addAll(newList)
             }else{
                 copyTestJpg(file)
             }
@@ -274,7 +265,15 @@ class IndexActivity : AppCompatActivity() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
     }
+    override fun onPause() {
+        super.onPause()
+        GSYVideoManager.onPause()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        GSYVideoManager.onResume()
+    }
     /**
      * 视频播放完毕回调接口，用来跳转到下一个视频
      */

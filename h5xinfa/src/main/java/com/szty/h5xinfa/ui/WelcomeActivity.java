@@ -14,7 +14,9 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.shuyu.gsyvideoplayer.player.IjkPlayerManager;
 import com.shuyu.gsyvideoplayer.player.PlayerFactory;
+import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.szty.h5xinfa.Constant;
 import com.szty.h5xinfa.R;
 import com.szty.h5xinfa.XmlManager;
@@ -32,6 +34,7 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import tv.danmaku.ijk.media.exo2.Exo2PlayerManager;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 @RuntimePermissions
 public class WelcomeActivity extends AppCompatActivity {
@@ -85,6 +88,11 @@ public class WelcomeActivity extends AppCompatActivity {
             }
             //开启EXO模式
             PlayerFactory.setPlayManager(Exo2PlayerManager.class);
+            //ijk关闭log
+            IjkPlayerManager.setLogLevel(IjkMediaPlayer.IJK_LOG_SILENT);
+            //切换渲染模式
+            GSYVideoType.setShowType(GSYVideoType.SCREEN_MATCH_FULL);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
