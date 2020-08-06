@@ -1,8 +1,8 @@
 package com.szty.h5xinfa;
 
-import android.app.Application;
+import androidx.multidex.MultiDexApplication;
 
-public class MyApplication extends Application {
+public class MyApplication extends MultiDexApplication {
     private static final String TAG = "MyApplication";
     @Override
     public void onCreate() {

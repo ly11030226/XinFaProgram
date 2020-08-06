@@ -99,7 +99,7 @@ android {
             signingConfig signingConfigs.debug
         }
     }
-    viewBinding.enabled = true
+//    viewBinding.enabled = true
     packagingOptions {
         exclude 'res/drawable-xxhdpi-v4/video_error_pressed.png'
     }

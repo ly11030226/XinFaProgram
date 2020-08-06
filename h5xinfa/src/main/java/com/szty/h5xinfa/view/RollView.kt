@@ -18,13 +18,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer
 import com.szty.h5xinfa.R
-import com.szty.h5xinfa.databinding.ViewRollviewBinding
 import com.szty.h5xinfa.ui.IndexActivity
 import com.szty.h5xinfa.ui.SecondActivity
 import com.szty.h5xinfa.util.BaseUtils
 import com.szty.h5xinfa.viewRecycle.MyLinearLayoutManager
 import com.szty.h5xinfa.viewRecycle.RecyclerNormalAdapter
 import com.szty.h5xinfa.viewRecycle.ScrollHelper
+import kotlinx.android.synthetic.main.activity_second.*
+import kotlinx.android.synthetic.main.view_rollview.view.*
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.ref.WeakReference
@@ -32,7 +33,6 @@ import kotlin.math.min
 
 class RollView : RelativeLayout {
     val TAG: String = "RollView"
-    private var building: ViewRollviewBinding? = null
     private var rollViewWidth: Int = 0
     private var rollViewHeight :Int = 0
     private val mLayoutManager : MyLinearLayoutManager
@@ -54,7 +54,7 @@ class RollView : RelativeLayout {
                 when{
                     (msg.what == RollView.AUTO_PLAY) ->{
                         val pos : Int = msg.obj as Int
-                        secondActivity?.building!!.rollview.smoothScrollToPosition(pos)
+                        a.get()?.rollview?.smoothScrollToPosition(pos)
                     }else ->{}
                 }
             }
@@ -66,7 +66,7 @@ class RollView : RelativeLayout {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs,0)
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs,
             defStyle) {
-        building = ViewRollviewBinding.inflate(LayoutInflater.from(context), this, true)
+        LayoutInflater.from(context).inflate(R.layout.view_rollview,this,true)
         mLayoutManager = MyLinearLayoutManager(context)
         val a = context as SecondActivity
         handler = MyHandler(a)
@@ -90,7 +90,7 @@ class RollView : RelativeLayout {
     }
 
     private fun smoothScrollToPosition(pos:Int){
-        building!!.rv.smoothScrollToPosition(pos+1)
+        rv.smoothScrollToPosition(pos+1)
     }
 
     private fun createFolderIfNeed() {
@@ -147,23 +147,23 @@ class RollView : RelativeLayout {
     }
 
     private fun initRecyclerView() {
-        building!!.rv.layoutManager = mLayoutManager
-        building!!.rv.setHasFixedSize(true)
+        rv.layoutManager = mLayoutManager
+        rv.setHasFixedSize(true)
         mLayoutManager.orientation = RecyclerView.HORIZONTAL
         val psh = PagerSnapHelper()
-        psh.attachToRecyclerView(building!!.rv)
+        psh.attachToRecyclerView(rv)
     }
     @RequiresApi(Build.VERSION_CODES.M)
     private fun initData() {
         mRecyclerViewAdapter = RecyclerNormalAdapter(context,dataList,object: IndexActivity
         .PlayCompleteCallBack {
             override fun playComplete(pos: Int) {
-                building!!.rv.smoothScrollToPosition(pos+1)
+                rv.smoothScrollToPosition(pos+1)
             }
         })
-        building!!.rv.adapter = mRecyclerViewAdapter
+        rv.adapter = mRecyclerViewAdapter
         //自定播放帮助类
-        building!!.rv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        rv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             var firstVisibleItem : Int = 0
             var lastVisibleItem : Int = 0
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

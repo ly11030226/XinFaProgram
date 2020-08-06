@@ -147,7 +147,7 @@ public class WelcomeActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(WelcomeActivity.this, IndexActivity.class);
+                    Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
                     intent.putExtra(Constant.KEY_HANDLE_CODE,handleCode);
                     startActivity(intent);
                     finish();

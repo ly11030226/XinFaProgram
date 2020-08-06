@@ -6,22 +6,31 @@
     android:background="@color/white"
     android:padding="4dp">
 
-    <com.szty.h5xinfa.view.MyImageView
-        android:id="@+id/iv_img"
-        android:layout_width="match_parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@mipmap/c7"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.szty.h5xinfa.view.MyImageView
-        android:id="@+id/iv_bg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/iv_bg"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.szty.h5xinfa.view.MyImageView
+            android:id="@+id/iv_img"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/c7"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.szty.h5xinfa.view.MyImageView
+            android:id="@+id/iv_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/iv_bg"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

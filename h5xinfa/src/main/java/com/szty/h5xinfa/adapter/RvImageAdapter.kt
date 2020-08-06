@@ -8,22 +8,26 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ads.utillibrary.utils.Tools
 import com.szty.h5xinfa.R
 import com.szty.h5xinfa.RvEntity
-import com.szty.h5xinfa.databinding.ViewRvBinding
 import com.szty.h5xinfa.view.ShowRvView
+import java.util.zip.Inflater
 
 class RvImageAdapter(var dataList:List<RvEntity>) : RecyclerView.Adapter<RvImageAdapter.ViewHolder>() {
     val TAG : String = "RvImageAdapter"
     var listener: OnItemClickCallBack? = null
 
-    class ViewHolder(var viewBinding: ViewRvBinding) : RecyclerView.ViewHolder(viewBinding.root) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var root:ConstraintLayout = itemView.findViewById(R.id.root)
+        var ivImg:ImageView = itemView.findViewById(R.id.iv_img)
+        var ivBg:ImageView = itemView.findViewById(R.id.iv_bg)
         fun bind(entity: RvEntity){
-            viewBinding.ivImg.setBackgroundResource(entity.resId)
-            viewBinding.ivBg.visibility = if(entity.isShow){
+            ivImg.setBackgroundResource(entity.resId)
+            ivBg.visibility = if(entity.isShow){
                 View.GONE
             }else{
                 View.VISIBLE
@@ -37,9 +41,8 @@ class RvImageAdapter(var dataList:List<RvEntity>) : RecyclerView.Adapter<RvImage
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var building : ViewRvBinding = ViewRvBinding.inflate(LayoutInflater.from(parent.context),
-                parent,false)
-        return ViewHolder(building)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_rv,parent,false)
+        return ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -47,7 +50,7 @@ class RvImageAdapter(var dataList:List<RvEntity>) : RecyclerView.Adapter<RvImage
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.viewBinding.root.setOnClickListener{
+        holder.root.setOnClickListener{
             listener?.onItemClick(position)
         }
         var entity = dataList[position]

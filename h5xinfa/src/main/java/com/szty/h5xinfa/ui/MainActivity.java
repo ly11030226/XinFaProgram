@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -185,53 +186,43 @@ public class MainActivity extends AppCompatActivity {
          * APP_NAME_UA 用户自定义名字
          */
         WebSettings webSetting = webView.getSettings();
-
-
-        /**
-         * 设置加载进来的页面自适应手机屏幕
-         * 第一个方法设置webview推荐使用的窗口，设置为true。第二个方法是设置webview加载的页面的模式，也设置为true。
-         * 这方法可以让你的页面适应手机屏幕的分辨率，完整的显示在屏幕上，可以放大缩小。
-         */
-        webView.getSettings().setUseWideViewPort(true);
-        webView.getSettings().setLoadWithOverviewMode(true);
-
-        webView.setVerticalScrollbarOverlay(true);
         webSetting.setJavaScriptEnabled(true);
-        webView.addJavascriptInterface(new JavaScriptinterface(), "android");
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
         webSetting.setAllowFileAccess(true);
         webSetting.setSupportZoom(true);
         webSetting.setBuiltInZoomControls(false);
+        webSetting.setUseWideViewPort(true);
+        webSetting.setLoadWithOverviewMode(true);
         webSetting.setSupportMultipleWindows(true);
         webSetting.setAppCacheEnabled(true);
         webSetting.setDomStorageEnabled(true);
-        webSetting.setGeolocationEnabled(true);
-        webSetting.setAppCacheMaxSize(Long.MAX_VALUE);
-        webSetting.setPluginState(WebSettings.PluginState.ON_DEMAND);
-        webSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
-
-        getWindow().setFormat(PixelFormat.TRANSLUCENT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+            webSetting.setMediaPlaybackRequiresUserGesture(false);
         }
-
-        //        webView.getView().setOverScrollMode(View.OVER_SCROLL_ALWAYS);
-
-        // settings 的设计
-        webView.setWebViewClient(new WebViewClient() {
+        webSetting.setGeolocationEnabled(true);
+        webSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webSetting.setTextZoom(100);
+        webSetting.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
+        /**
+         * 注：这里如果重写了WebChromeClient的shouldOverrideUrlLoading方法
+         * 在某些Android终端上加载iframe时会出现显示错误
+         */
+        webView.setWebViewClient(new WebViewClient(){
             @Override
-            public boolean shouldOverrideUrlLoading(WebView webView, String url) {
-                webView.loadUrl(url);
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                view.loadUrl(url);
                 return true;
             }
         });
-
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
                 return super.onJsAlert(view, url, message, result);
             }
         });
+        webView.setInitialScale(100);
     }
 
     /**

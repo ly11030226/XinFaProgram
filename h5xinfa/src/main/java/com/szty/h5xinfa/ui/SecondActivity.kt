@@ -18,9 +18,9 @@ import com.szty.h5xinfa.RvEntity
 
 import com.szty.h5xinfa.adapter.MyImageAdapter
 import com.szty.h5xinfa.adapter.RvImageAdapter
-import com.szty.h5xinfa.databinding.ActivitySecondBinding
 import com.szty.h5xinfa.view.MyListView
 import com.youth.banner.listener.OnPageChangeListener
+import kotlinx.android.synthetic.main.activity_second.*
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 
 class SecondActivity : AppCompatActivity() {
@@ -34,11 +34,9 @@ class SecondActivity : AppCompatActivity() {
     private val imageDataList = listOf(
             R.mipmap.c1, R.mipmap.c2,R.mipmap.c3, R.mipmap.c4,
             R.mipmap.c5, R.mipmap.c6, R.mipmap.c7, R.mipmap.c8)
-    public lateinit var building: ActivitySecondBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        building = ActivitySecondBinding.inflate(layoutInflater)
-        setContentView(building.root)
+        setContentView(R.layout.activity_second)
         try {
             initMarqueeView()
             addListener()
@@ -56,9 +54,9 @@ class SecondActivity : AppCompatActivity() {
     private fun addTouchListener() {
         var lastPointX : Int
         var lastPointY : Int
-        building.ivTuo.setOnTouchListener{ view, event->
-            lastPointX = building.clContent.x.toInt()
-            lastPointY = building.clContent.y.toInt()
+        iv_tuo.setOnTouchListener{ view, event->
+            lastPointX = cl_content.x.toInt()
+            lastPointY = cl_content.y.toInt()
             when(event.action){
                 MotionEvent.ACTION_DOWN ->{
                     lastPointX = event.rawX.toInt()
@@ -69,10 +67,10 @@ class SecondActivity : AppCompatActivity() {
                     val xDis = event.rawX.toInt() - lastPointX
                     val yDis = event.rawY.toInt() - lastPointY
                     if(xDis!=0 && yDis!=0){
-                        var l = building.clContent.left + xDis
-                        var t = building.clContent.top + yDis
-                        var r = building.clContent.right + xDis
-                        var b = building.clContent.bottom + yDis
+                        var l = cl_content.left + xDis
+                        var t = cl_content.top + yDis
+                        var r = cl_content.right + xDis
+                        var b = cl_content.bottom + yDis
 //                        if(l<0){
 //                            l = 0
 //                            r = l + building.clContent.width
@@ -80,7 +78,7 @@ class SecondActivity : AppCompatActivity() {
 //                        if(){
 //
 //                        }
-                        building.clContent.layout(l,t,r,b)
+                        cl_content.layout(l,t,r,b)
                     }
                     lastPointX = event.rawX.toInt()
                     lastPointY = event.rawY.toInt()
@@ -95,38 +93,38 @@ class SecondActivity : AppCompatActivity() {
 
     private fun initRightItem() {
         //默认隐藏
-        building.llMainTemp.visibility = View.GONE
-        building.rlRate.visibility = View.GONE
-        building.myListView.addClickItemCallBack(object:MyListView.ClickItemCallBack{
+        ll_main_temp.visibility = View.GONE
+        rl_rate.visibility = View.GONE
+        myListView.addClickItemCallBack(object:MyListView.ClickItemCallBack{
             override fun click1() {
-                building.llMainTemp.visibility = View.GONE
-                building.rlRate.visibility = View.GONE
+                ll_main_temp.visibility = View.GONE
+                rl_rate.visibility = View.GONE
             }
 
             override fun click2() {
-                building.llMainTemp.visibility = View.VISIBLE
-                building.mivTemp.setBackgroundResource(R.mipmap.r1)
-                building.rlBottomTemp.visibility = View.VISIBLE
-                building.rlRate.visibility = View.GONE
+                ll_main_temp.visibility = View.VISIBLE
+                miv_temp.setBackgroundResource(R.mipmap.r1)
+                rl_bottom_temp.visibility = View.VISIBLE
+                rl_rate.visibility = View.GONE
             }
 
             override fun click3() {
-                building.llMainTemp.visibility = View.GONE
-                building.rlRate.visibility = View.VISIBLE
+                ll_main_temp.visibility = View.GONE
+                rl_rate.visibility = View.VISIBLE
             }
 
             override fun click4() {
-                building.llMainTemp.visibility = View.VISIBLE
-                building.mivTemp.setBackgroundResource(R.mipmap.r3)
-                building.rlBottomTemp.visibility = View.VISIBLE
-                building.rlRate.visibility = View.GONE
+                ll_main_temp.visibility = View.VISIBLE
+                miv_temp.setBackgroundResource(R.mipmap.r3)
+                rl_bottom_temp.visibility = View.VISIBLE
+                rl_rate.visibility = View.GONE
             }
 
             override fun click5() {
-                building.llMainTemp.visibility = View.VISIBLE
-                building.mivTemp.setBackgroundResource(R.mipmap.r2)
-                building.rlBottomTemp.visibility = View.VISIBLE
-                building.rlRate.visibility = View.GONE
+                ll_main_temp.visibility = View.VISIBLE
+                miv_temp.setBackgroundResource(R.mipmap.r2)
+                rl_bottom_temp.visibility = View.VISIBLE
+                rl_rate.visibility = View.GONE
             }
         })
     }
@@ -141,22 +139,22 @@ class SecondActivity : AppCompatActivity() {
                 }
                 mRvImageAdapter.notifyDataSetChanged()
                 needUpdateAdapter = false
-                building.banner.stop()
-                building.banner.currentItem = pos + 1
-                building.banner.start()
+                banner.stop()
+                banner.currentItem = pos + 1
+                banner.start()
             }
         }
         val llm = LinearLayoutManager(this)
         llm.orientation = LinearLayoutManager.HORIZONTAL
-        building.rvSecond.layoutManager = llm
-        building.rvSecond.adapter = mRvImageAdapter
+        rv_second.layoutManager = llm
+        rv_second.adapter = mRvImageAdapter
     }
 
 
     private fun initBanner() {
-        building.banner.adapter = MyImageAdapter(imageDataList)
-        building.banner.setDelayTime(10000)
-        building.banner.addOnPageChangeListener(object:OnPageChangeListener{
+        banner.adapter = MyImageAdapter(imageDataList)
+        banner.setDelayTime(10000)
+        banner.addOnPageChangeListener(object:OnPageChangeListener{
             override fun onPageScrollStateChanged(state: Int) {
             }
 
@@ -170,16 +168,16 @@ class SecondActivity : AppCompatActivity() {
                         dataList[i].isShow = i==position
                     }
                     mRvImageAdapter.notifyDataSetChanged()
-                    building.rvSecond.smoothScrollToPosition(position)
+                    rv_second.smoothScrollToPosition(position)
                 }
                 needUpdateAdapter = true
             }
         })
-        building.banner.start()
+        banner.start()
     }
 
     private fun addListener() {
-        building.ivBack.setOnClickListener{
+        iv_back.setOnClickListener{
             startActivity(Intent(this,IndexActivity::class.java))
             finish()
         }
@@ -197,24 +195,24 @@ class SecondActivity : AppCompatActivity() {
                         "购买国债安全理财 绿色金融共创美好生活")
         val marqueeFactory = SimpleMF<String>(this)
         marqueeFactory.data = marqueeList
-        building.simpleMarqueeView.setMarqueeFactory(marqueeFactory)
+        simpleMarqueeView.setMarqueeFactory(marqueeFactory as Nothing)
 //        building.simpleMarqueeView.startFlipping()
     }
 
 
     override fun onStart() {
         super.onStart()
-        building.simpleMarqueeView.startFlipping()
+        simpleMarqueeView.startFlipping()
     }
 
     override fun onStop() {
         super.onStop()
-        building.simpleMarqueeView.stopFlipping()
+        simpleMarqueeView.stopFlipping()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        building.rollview.clear()
+        rollview.clear()
     }
     override fun onPause() {
         super.onPause()
