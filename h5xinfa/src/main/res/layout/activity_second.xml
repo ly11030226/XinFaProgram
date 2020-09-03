@@ -221,7 +221,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <com.gongwen.marqueen.SimpleMarqueeView
+    <com.szty.h5xinfa.view.MySimpleMarqueeView
         android:id="@+id/simpleMarqueeView"
         android:layout_width="0dp"
         android:layout_height="48dp"

@@ -164,9 +164,10 @@ class IndexActivity : AppCompatActivity() {
                         "打造一流数字生态银行",
                         "让金融为美好生活创造价值",
                         "购买国债安全理财 绿色金融共创美好生活")
-        val marqueeFactory: MarqueeFactory<TextView,String> = SimpleMF<String>(this)
+        val marqueeFactory = SimpleMF<String>(this)
         marqueeFactory.data = marqueeList
-        simpleMarqueeView.setMarqueeFactory(marqueeFactory as Nothing)
+        val mf = marqueeFactory as MarqueeFactory<TextView,String>
+//        simpleMarqueeView.setMarqueeFactory(mf)
 //        building.simpleMarqueeView.startFlipping()
         simpleMarqueeView.visibility = View.GONE
     }

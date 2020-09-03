@@ -38,7 +38,7 @@ class SecondActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second)
         try {
-            initMarqueeView()
+//            initMarqueeView()
             addListener()
             initBanner()
             initRecyclerView()
@@ -195,7 +195,7 @@ class SecondActivity : AppCompatActivity() {
                         "购买国债安全理财 绿色金融共创美好生活")
         val marqueeFactory = SimpleMF<String>(this)
         marqueeFactory.data = marqueeList
-        simpleMarqueeView.setMarqueeFactory(marqueeFactory as Nothing)
+//        simpleMarqueeView.setMarqueeFactory(marqueeFactory as Nothing)
 //        building.simpleMarqueeView.startFlipping()
     }
 
