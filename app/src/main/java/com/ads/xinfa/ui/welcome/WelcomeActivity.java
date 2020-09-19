@@ -44,7 +44,15 @@ public abstract class WelcomeActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 获取layout xml的id
+     * @return
+     */
     public abstract int getLayoutId();
+
+    /**
+     * 申请权限通过后方可进行下部操作
+     */
     public abstract void doNext();
 
     private void createFile() {

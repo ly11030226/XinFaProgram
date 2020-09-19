@@ -36,55 +36,50 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode = "stateAlwaysHidden|adjustPan"
-            />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <service
             android:name=".floatView.FloatViewService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
-        <activity android:name=".floatView.FloatActivity"></activity>
-        <activity
-            android:name=".ui.scanCode.ScanCodeActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+        <activity android:name=".floatView.FloatActivity" />
+
         <activity
             android:name=".ui.help.HelpActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.wifiDirect.WifiDirectActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".ClientConnService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".ui.lanConnection.LanConnectionHostActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+            android:screenOrientation="fullSensor"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ui.fragmentMain.FragmentMainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+            android:screenOrientation="fullSensor"
+            android:theme="@style/AppTheme" />
 
         <service
             android:name=".net.HeartBeatService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".ui.welcome.CustomWelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -95,9 +90,9 @@
         <activity
             android:name=".ui.welcome.XinMiWelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppTheme"></activity>
-        <activity android:name=".ui.main.MainActivity"></activity>
+            android:screenOrientation="fullSensor"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ui.main.MainActivity" />
 
         <service android:name=".FtpService" />
 
@@ -109,7 +104,9 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
-        </provider> <!-- 开机启动 -->
+        </provider>
+
+        <!-- 开机启动 -->
         <receiver
             android:name=".StartBootCompleteReceiver"
             android:enabled="true"

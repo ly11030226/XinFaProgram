@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.media.MediaMetadataRetriever;
 import android.util.DisplayMetrics;
+import android.widget.TextView;
 
 import com.ads.utillibrary.utils.ConvertUtils;
 import com.ads.xinfa.FtpService;
@@ -16,6 +17,7 @@ import com.ads.xinfa.ui.help.HelpActivity;
 import com.ads.xinfa.ui.lanConnection.LanConnectionHostActivity;
 import com.ads.xinfa.utils.BaseUtils;
 import com.ads.xinfa.utils.SystemUtil;
+import com.ads.xinfa.utils.Tools;
 import com.gongw.remote.RemoteConst;
 import com.google.gson.Gson;
 
@@ -28,6 +30,11 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 
+
+/**
+ * 小信发欢迎界面
+ * @author Ly
+ */
 public class CustomWelcomeActivity extends WelcomeActivity {
 
     private static final String TAG = "CustomWelcomeActivity";
@@ -43,6 +50,11 @@ public class CustomWelcomeActivity extends WelcomeActivity {
 
     @Override
     public void doNext() {
+        //设置版本号
+        TextView tvCode = findViewById(R.id.tv_code);
+        String versionName = Tools.getVersionName(this);
+        tvCode.setText(versionName);
+        //判断是否有配置文件
         File file = new File(FileManager.UPLOAD_DIR);
         File[] files = null;
         if (file.exists()) {
