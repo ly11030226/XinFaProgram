@@ -18,6 +18,7 @@ import android.provider.MediaStore.MediaColumns;
 import android.widget.ImageView;
 
 import com.ads.clientconnection.BuildConfig;
+import com.ads.clientconnection.MyFileProvider;
 import com.ads.clientconnection.base.MyLogger;
 
 import java.io.ByteArrayInputStream;
@@ -30,7 +31,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.FileProvider;
 
 //import com.facebook.common.executors.CallerThreadExecutor;
 //import com.facebook.common.references.CloseableReference;
@@ -288,8 +288,8 @@ public class ImageUtils {
         if (android.os.Build.VERSION.SDK_INT < 24) {
             contentUri = Uri.fromFile(file);
         } else {
-            contentUri = FileProvider.getUriForFile(context,
-                    BuildConfig.APPLICATION_ID + ".fileProvider",
+            contentUri = MyFileProvider.getUriForFile(context,
+                    BuildConfig.APPLICATION_ID + ".myfileProvider",
                     file);
         }
         mediaScanIntent.setData(contentUri);

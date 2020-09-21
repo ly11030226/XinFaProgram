@@ -25,5 +25,5 @@
     <color name="play_list_line">#E2E2E2</color>
 
     <color name="device_text_content">#808080</color>
-
+    <color name="error_text">#2F48DE</color>
 </resources>

@@ -25,7 +25,7 @@ public class RemoteConst {
 	/**
      * 接收超时时间
 	 */
-	public static final int RECEIVE_TIME_OUT = 15*1000;
+	public static final int RECEIVE_TIME_OUT = 5*1000;
 
 	/**
 	 * udp数据包前缀

@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ads.clientconnection.BuildConfig;
+import com.ads.clientconnection.MyFileProvider;
 import com.ads.clientconnection.R;
 import com.ads.clientconnection.view.ImagePicker.adapter.AlbumAdapter;
 import com.ads.clientconnection.view.ImagePicker.adapter.PhotoSelectorAdapter;
@@ -39,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.FileProvider;
 
 
 
@@ -137,8 +137,8 @@ public class PhotoSelectorActivity extends Activity implements SelectPhotoItem.o
                     Environment.getExternalStorageDirectory(), path_name));
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         } else {
-            uri = FileProvider.getUriForFile(this,
-                    BuildConfig.APPLICATION_ID + ".fileProvider",
+            uri = MyFileProvider.getUriForFile(this,
+                    BuildConfig.APPLICATION_ID + ".myfileProvider",
                     new File(
                             Environment.getExternalStorageDirectory(), path_name));
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);

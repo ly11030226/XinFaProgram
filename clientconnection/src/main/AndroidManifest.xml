@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.ads.clientconnection">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.ads.clientconnection">
     <!-- 访问网络状态 -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/> <!-- 外置存储存取权限 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- 读取通讯录 -->
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/> <!-- 多媒体相关 -->
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 外置存储存取权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 读取通讯录 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 多媒体相关 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
-    <uses-feature android:name="android.hardware.camera"/>
-    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:name=".application.ClientApplication"
@@ -26,51 +26,44 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.soccer.ChoiceMatchActivity">
-        </activity>
-        <activity android:name=".ui.soccer.SoccerActivity">
-
-        </activity>
-        <activity android:name=".ui.resourceList.ResourceListActivity">
-        </activity>
-        <activity android:name=".ui.WelcomeActivity">
+        <activity android:name=".ui.ErrorActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="com.tamsiree.rxkit.crash.tcrashtool.ERROR" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.resourceControl.ResourceControlActivity">
+        <activity android:name=".ui.resourceList.ResourceListActivity" />
+        <activity android:name=".ui.WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".ui.MainActivity">
-        </activity>
-        <activity
-            xmlns:tools="http://schemas.android.com/tools"
+        <activity android:name=".ui.MainActivity" />
+        <activity xmlns:tools="http://schemas.android.com/tools"
             android:name=".ui.qrCode.QRCodeActivity"
             android:screenOrientation="fullSensor"
-            tools:replace="screenOrientation">
-        </activity> <!-- 选择图片 -->
+            tools:replace="screenOrientation" /> <!-- 选择图片 -->
         <activity
             android:name=".view.ImagePicker.PhotoSelectorActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"/> <!-- 选择图片 -->
+            android:screenOrientation="portrait" /> <!-- 选择图片 -->
         <activity
             android:name=".view.ImagePicker.PhotoPreviewActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.resourceManager.ResourceManagerActivity"
-            android:launchMode="singleTop">
-        </activity>
+            android:launchMode="singleTop" />
 
         <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.ads.clientconnection.fileprovider"
+            android:name=".MyFileProvider"
+            android:authorities="com.ads.clientconnection.myfileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths_public"/>
+                android:resource="@xml/file_paths_public" />
         </provider>
     </application>
 

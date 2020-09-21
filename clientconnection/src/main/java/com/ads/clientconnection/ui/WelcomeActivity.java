@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.TextView;
 
 import com.ads.clientconnection.R;
 import com.ads.clientconnection.base.BaseActivity;
@@ -20,6 +21,11 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+/**
+ * 欢迎界面
+ *
+ * @author Ly
+ */
 @RuntimePermissions
 public class WelcomeActivity extends BaseActivity {
     private static final String TAG = "WelcomeActivity";
@@ -51,6 +57,11 @@ public class WelcomeActivity extends BaseActivity {
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     void checkPermission() {
         try {
+            //设置版本号
+            TextView tvCode = findViewById(R.id.tv_code);
+            String versionName = BaseUtils.getVersionName(this);
+            tvCode.setText(versionName);
+            //跳转页面
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -67,25 +78,18 @@ public class WelcomeActivity extends BaseActivity {
     @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     void noPermission(PermissionRequest request) {
         MyLogger.i(TAG, "noPermission");
-        if (noPermissionDialog==null) {
-            noPermissionDialog = new MaterialDialog.Builder(this)
-                    .title(R.string.dialog_title)
-                    .content(R.string.res_no_permission)
-                    .positiveText(R.string.dialog_commit)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                            request.proceed();
-                        }
-                    })
-                    .negativeText(R.string.dialog_cancel)
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                            request.cancel();
-                        }
-                    })
-                    .build();
+        if (noPermissionDialog == null) {
+            noPermissionDialog = new MaterialDialog.Builder(this).title(R.string.dialog_title).content(R.string.res_no_permission).positiveText(R.string.dialog_commit).onPositive(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+                    request.proceed();
+                }
+            }).negativeText(R.string.dialog_cancel).onNegative(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+                    request.cancel();
+                }
+            }).build();
         }
         noPermissionDialog.show();
     }
@@ -98,25 +102,18 @@ public class WelcomeActivity extends BaseActivity {
     @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     void rejectAndNOAsk() {
         MyLogger.i(TAG, "rejectAndNOAsk");
-        if (noAskDialog==null) {
-            noAskDialog = new MaterialDialog.Builder(this)
-                    .title(R.string.dialog_title)
-                    .content(R.string.res_no_permission)
-                    .positiveText(R.string.dialog_confirm)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                            BaseUtils.jumpSystemSet(WelcomeActivity.this);
-                        }
-                    })
-                    .negativeText(R.string.dialog_do_not)
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                            noAskDialog.dismiss();
-                        }
-                    })
-                    .build();
+        if (noAskDialog == null) {
+            noAskDialog = new MaterialDialog.Builder(this).title(R.string.dialog_title).content(R.string.res_no_permission).positiveText(R.string.dialog_confirm).onPositive(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+                    BaseUtils.jumpSystemSet(WelcomeActivity.this);
+                }
+            }).negativeText(R.string.dialog_do_not).onNegative(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+                    noAskDialog.dismiss();
+                }
+            }).build();
         }
         noAskDialog.show();
     }
@@ -129,7 +126,6 @@ public class WelcomeActivity extends BaseActivity {
 
     ////////////////////////////权限相关///////////////////////////////////
     //////////////////////////////////////////////////////////////////////
-
 
 
 }
