@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:id="@+id/ll_all"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_all"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <com.marshalchen.ultimaterecyclerview.swipe.SwipeLayout
+    <FrameLayout
         android:id="@+id/recyclerview_swipe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -28,7 +28,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@mipmap/move_up"/>
+                    android:src="@mipmap/move_up" />
 
             </LinearLayout>
 
@@ -43,7 +43,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@mipmap/move_down"/>
+                    android:src="@mipmap/move_down" />
 
             </LinearLayout>
 
@@ -58,7 +58,7 @@
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    android:src="@mipmap/item_delete"/>
+                    android:src="@mipmap/item_delete" />
 
             </LinearLayout>
         </LinearLayout>
@@ -91,7 +91,7 @@
                         android:layout_height="48dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="16dp"
-                        android:src="@mipmap/logo_video"/>
+                        android:src="@mipmap/logo_video" />
 
 
                     <LinearLayout
@@ -115,7 +115,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/res_name"
                                 android:textColor="@color/device_text"
-                                android:textSize="20sp"/>
+                                android:textSize="20sp" />
 
                             <TextView
                                 android:id="@+id/tv_name"
@@ -127,7 +127,7 @@
                                 android:text=""
                                 android:textColor="@color/device_text_content"
                                 android:textSize="20sp"
-                                tools:text="Img"/>
+                                tools:text="Img" />
 
 
                         </LinearLayout>
@@ -144,7 +144,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/res_size"
                                 android:textColor="@color/device_text_content"
-                                android:textSize="17sp"/>
+                                android:textSize="17sp" />
 
                             <TextView
                                 android:id="@+id/tv_size"
@@ -153,7 +153,7 @@
                                 android:paddingLeft="8dp"
                                 android:textColor="@color/device_text_content"
                                 android:textSize="17sp"
-                                tools:text="1m"/>
+                                tools:text="1m" />
 
 
                             <TextView
@@ -163,7 +163,7 @@
                                 android:paddingLeft="32dp"
                                 android:text="@string/res_time"
                                 android:textColor="@color/device_text_content"
-                                android:textSize="17sp"/>
+                                android:textSize="17sp" />
 
 
                             <TextView
@@ -173,7 +173,7 @@
                                 android:paddingLeft="8dp"
                                 android:textColor="@color/device_text_content"
                                 android:textSize="17sp"
-                                tools:text="1分16秒"/>
+                                tools:text="1分16秒" />
                         </LinearLayout>
 
                         <!-- 停留时长 -->
@@ -189,7 +189,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/res_stay"
                                 android:textColor="@color/device_text_content"
-                                android:textSize="17sp"/>
+                                android:textSize="17sp" />
 
                             <TextView
                                 android:id="@+id/tv_stay"
@@ -198,7 +198,7 @@
                                 android:paddingLeft="8dp"
                                 android:textColor="@color/device_text_content"
                                 android:textSize="17sp"
-                                tools:text="10秒"/>
+                                tools:text="10秒" />
 
                         </LinearLayout>
 
@@ -210,14 +210,13 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/normal_line"
-                    />
+                    android:background="@color/normal_line" />
             </LinearLayout>
 
 
         </LinearLayout>
 
-    </com.marshalchen.ultimaterecyclerview.swipe.SwipeLayout>
+    </FrameLayout>
 
 
 </LinearLayout>

@@ -33,9 +33,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.gongw.remote.Tools;
 import com.gongw.remote.communication.CommunicationKey;
 import com.gongw.remote.communication.client.ClientByteSocketManager;
-import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
-import com.marshalchen.ultimaterecyclerview.layoutmanagers.ScrollSmoothLineaerLayoutManager;
-import com.marshalchen.ultimaterecyclerview.swipe.SwipeItemManagerInterface;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.filter.Filter;
@@ -53,6 +50,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -65,6 +63,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 /**
  * 资源管理列表界面
+ * @author Ly
  */
 @RuntimePermissions
 public class ResourceListActivity extends BaseActivity {
@@ -77,7 +76,7 @@ public class ResourceListActivity extends BaseActivity {
     private Handler mHandler = new Handler();
     List<ImageAndVideoEntity.FileEntity> fileEntityList;
     @BindView(R.id.rv_res_list)
-    UltimateRecyclerView rv;
+    RecyclerView rv;
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.rl_empty)
@@ -88,7 +87,7 @@ public class ResourceListActivity extends BaseActivity {
     LinearLayout llSave;
 
     private ShowFileEntityAdapter showFileEntityAdapter;
-    private ScrollSmoothLineaerLayoutManager lineaerLayoutManager;
+    private LinearLayoutManager lineaerLayoutManager;
     private MaterialDialog noPermissionDialog, noAskDialog;
     private MyProgressbar myProgressbar;
 
@@ -119,7 +118,6 @@ public class ResourceListActivity extends BaseActivity {
             registerReceiver();
             initIntent();
             initRecyclerView();
-            addListener();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -133,17 +131,13 @@ public class ResourceListActivity extends BaseActivity {
         LocalBroadcastManager.getInstance(ResourceListActivity.this).registerReceiver(myListener, intentFilter);
     }
 
-    private void addListener() {
-        ClickListener clickListener = new ClickListener();
-        showFileEntityAdapter.addOnClickListner(clickListener);
-    }
+
 
     private void initRecyclerView() {
-        showFileEntityAdapter = new ShowFileEntityAdapter(fileEntityList, Constant.RES_LIST_USE_ADAPTER);
-        showFileEntityAdapter.setMode(SwipeItemManagerInterface.Mode.Single);
-        lineaerLayoutManager = new ScrollSmoothLineaerLayoutManager(ResourceListActivity.this, LinearLayoutManager.VERTICAL, false, 500);
+        showFileEntityAdapter = new ShowFileEntityAdapter(ResourceListActivity.this,fileEntityList, Constant.RES_LIST_USE_ADAPTER);
+        lineaerLayoutManager = new LinearLayoutManager(ResourceListActivity.this);
+        lineaerLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rv.setLayoutManager(lineaerLayoutManager);
-        rv.setHasFixedSize(false);
         rv.setAdapter(showFileEntityAdapter);
     }
 
@@ -223,55 +217,6 @@ public class ResourceListActivity extends BaseActivity {
     }
 
 
-    class ClickListener implements ShowFileEntityAdapter.OnClickListener {
-
-        @Override
-        public void onPressItem(int position) {
-        }
-
-        @Override
-        public void onPressDelete(int postion) {
-            openDeleteDialog(postion);
-        }
-
-        @Override
-        public void onPressDownload(int position) {
-        }
-
-        @Override
-        public void onPressEdit(int position) {
-        }
-
-        @Override
-        public void onLongClick(int position) {
-
-        }
-    }
-
-    private void openDeleteDialog(int position) {
-        MyLogger.i(TAG, "position ... " + position);
-        ImageAndVideoEntity.FileEntity fileEntity = fileEntityList.get(position);
-        materialDialog = new MaterialDialog.Builder(ResourceListActivity.this).positiveText("确定").onPositive(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                if (fileEntityList.size() == 1 && fileEntityList.contains(fileEntity)) {
-                    fileEntityList.remove(fileEntity);
-                    setEmptyView();
-                }else{
-                    showFileEntityAdapter.removeAt(position);
-                    showFileEntityAdapter.notifyDataSetChanged();
-                }
-
-            }
-        }).onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                materialDialog.dismiss();
-            }
-        }).negativeText("取消").title("提示").content("您确定把该" + fileEntity.getFormat() + "删除吗？").build();
-        materialDialog.show();
-    }
-
     public void openDownloadDialog(int position) {
         ImageAndVideoEntity.FileEntity fileEntity = fileEntityList.get(position);
         materialDialog = new MaterialDialog.Builder(ResourceListActivity.this).positiveText("确定").onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -286,7 +231,7 @@ public class ResourceListActivity extends BaseActivity {
                     byte[] srcBytes = null;
                     try {
                         String name = fileEntity.getName();
-                        ClientByteSocketManager.getInstance().currentDownloadName = name;
+                        ClientByteSocketManager.currentDownloadName = name;
                         srcBytes = fileEntity.getName().getBytes("UTF-8");
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();

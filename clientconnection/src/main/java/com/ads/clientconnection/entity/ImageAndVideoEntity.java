@@ -198,7 +198,7 @@ public class ImageAndVideoEntity implements Serializable {
 
         @Override
         public String toString() {
-            return "FileEntity{" + "format='" + format + '\'' + ", time='" + time + '\'' + ", name='" + name + '\'' + ", size='" + size + '\'' + ", playTime='" + playTime + '\'' + ", uriStr='" + uriStr + '\'' + ", isAdd=" + isAdd + '}';
+            return "FileEntity{name=" + name + "  time= " + time + "}";
         }
     }
 }

@@ -4,6 +4,9 @@ import android.os.Environment;
 
 import java.io.File;
 
+/**
+ * @author Ly
+ */
 public class Constant {
     public static final String TEMP_DIR =
             Environment.getExternalStorageDirectory().getPath()+
@@ -50,4 +53,7 @@ public class Constant {
     public static final String RES_MANAGER_USE_ADAPTER = "RES_MANAGER_USE_ADAPTER";
     public static final String RES_LIST_USE_ADAPTER = "RES_LIST_USE_ADAPTER";
 
+    public static final String KEY_UPDATE_LIST = "KEY_UPDATE_LIST";
+    //为了追踪播放列表的轨迹 需要针对它打印log
+    public static final String TRACK_LIST = "TrackList";
 }

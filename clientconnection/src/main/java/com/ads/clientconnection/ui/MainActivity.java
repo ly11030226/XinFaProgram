@@ -36,6 +36,7 @@ import com.gongw.remote.search.DeviceSearcher;
 import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.tamsiree.rxkit.TLog;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -93,9 +94,9 @@ public class MainActivity extends BaseActivity {
                 switch (msg.what) {
                     case CommunicationKey.FLAG_CLIENT_READ_DATA:
                         String json = (String) msg.obj;
-                        MyLogger.i(TAG,"read list data json ... "+json);
+                        TLog.d(TAG,"获取广告机本地存储的json数据");
                         if (TextUtils.isEmpty(json)) {
-                            MyLogger.e(TAG, "json data is null");
+                            TLog.e(TAG, "json data is null");
                             return;
                         }
                         Gson gson = new Gson();
@@ -296,6 +297,8 @@ public class MainActivity extends BaseActivity {
                 ArrayList<ImageAndVideoEntity.FileEntity> fileEntities = (ArrayList<ImageAndVideoEntity.FileEntity>) data.getSerializableExtra(Constant.ACTION_BACK);
                 if (fileEntities != null && entity != null) {
                     entity.setFiles(fileEntities);
+                    civ.updateEntityData(entity);
+                    TLog.i(Constant.TRACK_LIST,"返回到主界面接收到的播放列表 ... "+fileEntities.toString());
                 }
             }
         } else {

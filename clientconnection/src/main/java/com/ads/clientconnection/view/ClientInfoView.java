@@ -103,6 +103,10 @@ public class ClientInfoView extends RelativeLayout {
         connected();
     }
 
+    public void updateEntityData(ImageAndVideoEntity entity){
+        this.entity = entity;
+    }
+
     public void setConnectClose(){
         tvConn.setText("");
         notConnected();

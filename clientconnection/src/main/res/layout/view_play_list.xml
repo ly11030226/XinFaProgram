@@ -34,13 +34,11 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_play_list_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:recyclerviewClipToPadding="true"
-            app:recyclerviewScrollbars="vertical">
-        </com.marshalchen.ultimaterecyclerview.UltimateRecyclerView>
+            android:layout_height="match_parent">
+        </androidx.recyclerview.widget.RecyclerView>
 
         <LinearLayout
             android:id="@+id/ll_empty"

@@ -277,4 +277,7 @@
 -keep class com.ads.clientconnection.entity.** { *; }
 
 
+-dontwarn com.vondear.#Rxjava
+-dontwarn com.alipay.#Rxjava
+
 ##---------------End: proguard configuration for Gson  ----------
