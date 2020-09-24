@@ -98,6 +98,15 @@ android {
     }
 }
 
+allprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
+        //关键地方--因为有一些引用是需要这个的
+        maven { url "https://jitpack.io" }
+    }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //    configurations.all {

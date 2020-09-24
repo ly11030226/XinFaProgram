@@ -219,7 +219,7 @@
 #-libraryjars /libs/mina-core-2.0.4.jar
 #-libraryjars /libs/slf4j-api-1.5.2.jar
 #-libraryjars /libs/slf4j-log4j12-1.5.2.jar
-
+-keep class org.apache.log4j.** { *; }
 
 #############################################
 #
