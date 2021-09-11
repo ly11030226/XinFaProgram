@@ -437,7 +437,11 @@ public class MainCrosswalkActivity extends XWalkActivity {
                 String responseStr = response.body().string();
                 Log.i(TAG, "requestUpgradeEnd onResponse: " + responseStr);
                 //发送upgradeEndUrl后开始安装
-                BaseUtils.installApk(MainCrosswalkActivity.this, file);
+                try {
+                    BaseUtils.installApk(MainCrosswalkActivity.this, file);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -593,13 +597,15 @@ public class MainCrosswalkActivity extends XWalkActivity {
         } catch (IOException e) {
             e.printStackTrace();
             ToastUtils.showToast(MainCrosswalkActivity.this, getString(R.string.unzip_error));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     /**
      * 安装升级文件
      */
-    private void installApk() {
+    private void installApk() throws Exception {
         Log.i(TAG, "installApk: start install");
         String unZipPath = getExternalFilesDir(Constant.PATH_SZTY).getAbsolutePath() + File.separator + Constant.PATH_TEMP;
         File file = new File(unZipPath);

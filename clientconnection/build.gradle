@@ -140,7 +140,10 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:3.0.0'   //Bugly SDK版本号
     implementation 'com.tencent.bugly:nativecrashreport:3.7.1' //Bugly NDK版本号
     implementation 'com.android.support:multidex:1.0.1'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.8'
     //基础工具库
     implementation 'com.github.tamsiree.RxTool:RxKit:2.6.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testImplementation 'junit:junit:4.12'
 }

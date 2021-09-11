@@ -24,7 +24,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation rootProject.ext.dependencies["appcompat"]
-    testImplementation rootProject.ext.dependencies["junit"]
+    testImplementation 'junit:junit:4.12'
     androidTestImplementation rootProject.ext.dependencies["runner"]
     implementation rootProject.ext.dependencies["espresso-core"]
     implementation rootProject.ext.dependencies["gson"]

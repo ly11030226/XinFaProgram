@@ -1,28 +1,4 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
-# copyright zhonghanwen
-
-
-
+#noinspection ShrinkerUnresolvedReference
 -ignorewarnings -keep class * { public private *; }
 
 # 混合时不使用大小写混合，混合后的类名为小写
@@ -73,6 +49,11 @@
 -keep public class * extends android.view.View
 -keep public class com.android.vending.licensing.ILicensingService
 
+-keep class io.reactivex.rxjava3.**{*;}
+-keep class io.netty.**{*;}
+-dontwarn com.squareup.okhttp3.**
+-keep class com.squareup.okhttp3.** { *;}
+-dontwarn okio.**
 
 # 保留support下的所有类及其内部类
 -keep class android.support.** {*;}
@@ -103,13 +84,13 @@
 #}
 
 # 保留我们自定义控件（继承自View）不被混淆
-#-keep public class * extends android.view.View{
-#    *** get*();
-#    void set*(***);
-#    public <init>(android.content.Context);
-#    public <init>(android.content.Context, android.util.AttributeSet);
-#    public <init>(android.content.Context, android.util.AttributeSet, int);
-#}
+-keep public class * extends android.view.View{
+    *** get*();
+    void set*(***);
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
 
 # 保留Parcelable序列化类不被混淆
 #-keep class * implements android.os.Parcelable {
@@ -136,16 +117,16 @@
 #}
 
 # webView处理，项目中没有使用到webView忽略即可
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#    public *;
-#}
-#-keepclassmembers class * extends android.webkit.webViewClient {
-#    public void *(android.webkit.WebView, java.lang.String, android.graphics.Bitmap);
-#    public boolean *(android.webkit.WebView, java.lang.String);
-#}
-#-keepclassmembers class * extends android.webkit.webViewClient {
-#    public void *(android.webkit.webView, jav.lang.String);
-#}
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+    public *;
+}
+-keepclassmembers class * extends android.webkit.webViewClient {
+    public void *(android.webkit.WebView, java.lang.String, android.graphics.Bitmap);
+    public boolean *(android.webkit.WebView, java.lang.String);
+}
+-keepclassmembers class * extends android.webkit.webViewClient {
+    public void *(android.webkit.WebView, java.lang.String);
+}
 
 
 
@@ -210,9 +191,6 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
--keep class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator *;
-}
 #// natvie 方法不混淆
 -keepclasseswithmembernames class * {
     native <methods>;
@@ -221,6 +199,10 @@
 #保持 Parcelable 不被混淆
 -keep class * implements android.os.Parcelable {
   public static final android.os.Parcelable$Creator *;
+}
+-keepclassmembers class * implements android.os.Parcelable {
+ public <fields>;
+ private <fields>;
 }
 
 #----------------------------------------------------------------------------
@@ -234,13 +216,13 @@
     public boolean *(android.webkit.WebView, java.lang.String);
 }
 -keepclassmembers class * extends android.webkit.WebViewClient {
-    public void *(android.webkit.WebView, jav.lang.String);
+    public void *(android.webkit.WebView, java.lang.String);
 }
 #----------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 #---------------------------------实体类---------------------------------
 #修改成你对应的包名
--keep class [com.szty.h5xinfa].** { *; }
+-keep class com.szty.h5xinfa.** { *; }
 
 #---------------------------------第三方包-------------------------------
 
@@ -318,7 +300,7 @@
 
 ## okhttp
 -dontwarn com.squareup.okhttp.**
--keep class com.squareup.okhttp.{*;}
+-keep class com.squareup.okhttp.** {*;}
 #retrofit
 -dontwarn retrofit.**
 -keep class retrofit.** { *; }
@@ -383,7 +365,7 @@
 -keep class im.yixin.sdk.api.YXMessage {*;}
 -keep class im.yixin.sdk.api.** implements im.yixin.sdk.api.YXMessage$YXMessageData{*;}
 #下面中括号的地方需要要填你的包名
--keep public class [com.szty.h5xinfa].R$*{
+-keep public class com.szty.h5xinfa.R$*{
     public static final int *;
 }
 -keepclassmembers class * {
@@ -419,17 +401,6 @@
 -keepclasseswithmembernames class * {
     native <methods>;
 }
-
-#eventbus 3.0
--keepattributes *Annotation*
--keepclassmembers class ** {
-    @org.greenrobot.eventbus.Subscribe <methods>;
-}
--keep enum org.greenrobot.eventbus.ThreadMode { *; }
--keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
-    <init>(java.lang.Throwable);
-}
-
 
 #EventBus
 -keepclassmembers class ** {
@@ -501,7 +472,7 @@ public void xxxxxx(**);
 # # -------------------------------------------
 -keep class de.greenrobot.dao.** {*;}
 -keepclassmembers class * extends de.greenrobot.dao.AbstractDao {
-    public static Java.lang.String TABLENAME;
+    public static java.lang.String TABLENAME;
 }
 -keep class **$Properties
 # #  ############### volley混淆  ###############
@@ -602,7 +573,7 @@ public void xxxxxx(**);
    long producerIndex;
    long consumerIndex;
 }
-
+-keep class rx.in
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
     rx.internal.util.atomic.LinkedQueueNode producerNode;
 }
@@ -612,15 +583,16 @@ public void xxxxxx(**);
 }
 
 #litepal
--dontwarn org.litepal.
--keep class org.litepal.* { *; }
--keep enum org.litepal.*
--keep interface org.litepal. { *; }
--keep class org.litepal.** {
-    *;
+-dontwarn org.litepal.*
+-keep class org.litepal.** { *; }
+-keep enum org.litepal.**
+-keep interface org.litepal.** { *; }
+-keep public class * extends org.litepal.**
+-keepattributes *Annotation*
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
 }
--keepattributes Annotation
--keepclassmembers class * extends org.litepal.crud.DataSupport{*;}
 
 #fastJson
 -dontwarn com.alibaba.fastjson.**
@@ -638,20 +610,6 @@ public void xxxxxx(**);
 -keepclasseswithmembernames class com.xiaomi.**{*;}
 -keep public class * extends com.xiaomi.mipush.sdk.PushMessageReceiver
 
-
-#fresco
-# Do not strip any method/class that is annotated with @DoNotStrip
--keep @com.facebook.common.internal.DoNotStrip class *
--keepclassmembers class * {
-    @com.facebook.common.internal.DoNotStrip *;
-}
-
-
-
-#科大讯飞
-#由*	jp1017*贡献混淆代码
-#作者Github地址：hhttps://github.com/jp1017
--keep class com.iflytek.**{*;}
 
 
 -dontwarn com.gc.materialdesign.**

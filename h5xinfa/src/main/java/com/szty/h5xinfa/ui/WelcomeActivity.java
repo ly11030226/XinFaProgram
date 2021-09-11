@@ -2,6 +2,8 @@ package com.szty.h5xinfa.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,14 +21,15 @@ import com.shuyu.gsyvideoplayer.player.PlayerFactory;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.szty.h5xinfa.Constant;
 import com.szty.h5xinfa.R;
-import com.szty.h5xinfa.XmlManager;
+import com.szty.h5xinfa.baoao.ConfigJsonHandler;
+import com.szty.h5xinfa.baoao.ToolsKt;
 import com.szty.h5xinfa.util.BaseUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import io.reactivex.annotations.NonNull;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -64,35 +67,8 @@ public class WelcomeActivity extends AppCompatActivity {
             handler = new MyHandler(WelcomeActivity.this);
             //显示版本号
             showVersion();
-            //获取 android/data/packagename/files/szty 目录
-            File file = WelcomeActivity.this.getExternalFilesDir(Constant.PATH_SZTY);
-            File configF = new File(file,Constant.PATH_CONFIG);
-            //如果android/data/packagename/files/szty/config 目录不存在 则要创建各级文件夹
-            if (!configF.exists()) {
-                configF.mkdirs();
-                //发送消息
-                handler.sendEmptyMessage(Constant.FILE_NOT_EXIST);
-            }else{
-                //单独开辟一个线程用来加载config目录下面的xml数据
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            XmlManager.getInstance().loadXmlData(handler,WelcomeActivity.this);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            handler.sendEmptyMessage(Constant.LOAD_XML_ERROR);
-                        }
-                    }
-                }).start();
-            }
-            //开启EXO模式
-            PlayerFactory.setPlayManager(Exo2PlayerManager.class);
-            //ijk关闭log
-            IjkPlayerManager.setLogLevel(IjkMediaPlayer.IJK_LOG_SILENT);
-            //切换渲染模式
-            GSYVideoType.setShowType(GSYVideoType.SCREEN_MATCH_FULL);
-
+            //申请权限
+            requestPermissions();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,19 +83,19 @@ public class WelcomeActivity extends AppCompatActivity {
         String version = BaseUtils.getVersionCode(WelcomeActivity.this);
         if (TextUtils.isEmpty(version)) {
             tvVersion.setVisibility(View.GONE);
-        }else{
+        } else {
             tvVersion.setVisibility(View.VISIBLE);
-            tvVersion.setText("v "+version);
+            tvVersion.setText("v " + version);
         }
-        Log.d(TAG, "showVersion: "+version);
+        Log.d(TAG, "showVersion: " + version);
     }
 
-    private void requestPermissions(){
+    private void requestPermissions() {
         WelcomeActivityPermissionsDispatcher.checkPermissionWithPermissionCheck(this);
     }
 
 
-    private static class MyHandler extends Handler{
+    private static class MyHandler extends Handler {
         WeakReference<WelcomeActivity> activity;
 
         public MyHandler(WelcomeActivity a) {
@@ -131,91 +107,119 @@ public class WelcomeActivity extends AppCompatActivity {
             WelcomeActivity a = activity.get();
             if (a != null) {
                 handleCode = msg.what;
-                a.requestPermissions();
+                a.handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(a, MainActivity.class);
+                        intent.putExtra(Constant.KEY_HANDLE_CODE, handleCode);
+                        a.startActivity(intent);
+                        a.finish();
+                    }
+                }, 2000);
             }
         }
     }
 
 
-
     ////////////////////////////权限相关///////////////////////////////////
     //////////////////////////////////////////////////////////////////////
 
-    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE})
     void checkPermission() {
         try {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                    intent.putExtra(Constant.KEY_HANDLE_CODE,handleCode);
-                    startActivity(intent);
-                    finish();
+            //生成盛放背景图片的文件夹
+            File bg = WelcomeActivity.this.getExternalFilesDir("szty/bg");
+            if (!bg.exists()) {
+                bg.mkdirs();
+            } else {
+                File bgJpg = new File(bg, "bg.jpg");
+                File bgPng = new File(bg, "bg.png");
+                if (bgJpg.exists()) {
+                    ToolsKt.setBgBitmapDrawable(new BitmapDrawable(getResources(), BitmapFactory.decodeFile(bgJpg.getAbsolutePath())));
+                } else if (bgPng.exists()) {
+                    ToolsKt.setBgBitmapDrawable(new BitmapDrawable(getResources(), BitmapFactory.decodeFile(bgPng.getAbsolutePath())));
                 }
-            }, 2000);
+            }
+            //获取 android/data/packagename/files/szty 目录
+            File file = WelcomeActivity.this.getExternalFilesDir(Constant.PATH_SZTY);
+            File configF = new File(file, Constant.PATH_CONFIG);
+            //如果android/data/packagename/files/szty/config 目录不存在 则要创建各级文件夹
+            if (!configF.exists()) {
+                configF.mkdirs();
+                //发送消息
+                handler.sendEmptyMessage(Constant.FILE_NOT_EXIST);
+            } else {
+                //单独开辟一个线程用来加载config目录下面的xml数据
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+//                            XmlManager.getInstance().loadXmlData(handler, WelcomeActivity.this);
+                            ConfigJsonHandler.Companion.get().readConfig(handler,WelcomeActivity.this);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            handler.sendEmptyMessage(Constant.LOAD_XML_ERROR);
+                        }
+                    }
+                }).start();
+            }
+            //开启EXO模式
+            PlayerFactory.setPlayManager(Exo2PlayerManager.class);
+            //ijk关闭log
+            IjkPlayerManager.setLogLevel(IjkMediaPlayer.IJK_LOG_SILENT);
+            //切换渲染模式
+            GSYVideoType.setShowType(GSYVideoType.SCREEN_MATCH_FULL);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE})
     void noPermission(PermissionRequest request) {
         Log.i(TAG, "noPermission");
-        if (noPermissionDialog==null) {
-            noPermissionDialog = new MaterialDialog.Builder(this)
-                    .title(R.string.dialog_title)
-                    .content(R.string.res_no_permission)
-                    .positiveText(R.string.dialog_commit)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                            request.proceed();
-                        }
-                    })
-                    .negativeText(R.string.dialog_cancel)
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                            request.cancel();
-                        }
-                    })
-                    .build();
+        if (noPermissionDialog == null) {
+            noPermissionDialog = new MaterialDialog.Builder(this).title(R.string.dialog_title).content(R.string.res_no_permission).positiveText(R.string.dialog_commit).onPositive(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+                    request.proceed();
+                }
+            }).negativeText(R.string.dialog_cancel).onNegative(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+                    request.cancel();
+                }
+            }).build();
         }
         noPermissionDialog.show();
     }
 
-    @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE})
     void reject() {
         Log.i(TAG, "reject");
     }
 
-    @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE})
     void rejectAndNOAsk() {
         Log.i(TAG, "rejectAndNOAsk");
-        if (noAskDialog==null) {
-            noAskDialog = new MaterialDialog.Builder(this)
-                    .title(R.string.dialog_title)
-                    .content(R.string.res_no_permission)
-                    .positiveText(R.string.dialog_confirm)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                            Intent intent = new Intent();
-                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            Uri uri = Uri.fromParts("package", WelcomeActivity.this.getPackageName(), null);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.setData(uri);
-                            startActivity(intent);
-                        }
-                    })
-                    .negativeText(R.string.dialog_do_not)
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                            noAskDialog.dismiss();
-                        }
-                    })
-                    .build();
+        if (noAskDialog == null) {
+            noAskDialog = new MaterialDialog.Builder(this).title(R.string.dialog_title).content(R.string.res_no_permission).positiveText(R.string.dialog_confirm).onPositive(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+                    Intent intent = new Intent();
+                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", WelcomeActivity.this.getPackageName(), null);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setData(uri);
+                    startActivity(intent);
+                }
+            }).negativeText(R.string.dialog_do_not).onNegative(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+                    noAskDialog.dismiss();
+                }
+            }).build();
         }
         noAskDialog.show();
     }

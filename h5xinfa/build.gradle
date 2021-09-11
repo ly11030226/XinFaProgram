@@ -2,8 +2,18 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-android {
+def releaseTime() {
+    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+8"))
+}
 
+android {
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                //在这里修改apk文件名
+                outputFileName = "H5Queue_${variant.name}_v${variant.versionName}_${releaseTime()}.apk"
+            }
+    }
     signingConfigs {
         release {
             keyAlias project.KS_ALIAS
@@ -11,7 +21,7 @@ android {
             storeFile file(KS_FILE_PATH)
             storePassword project.KS_STORE_PASSWORD
         }
-        debug {
+        myDebug {
             keyAlias project.KS_ALIAS
             keyPassword project.KS_PASSWORD
             storeFile file(KS_FILE_PATH)
@@ -84,6 +94,7 @@ android {
 
             buildConfigField "boolean", "API_ENV", "true"     //正式环境
             buildConfigField "boolean", "LOG_DEBUG", "false"  //不打印log
+            buildConfigField "String", "PATH",'"/Iface/"'
             signingConfig signingConfigs.release   //签名
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -93,10 +104,17 @@ android {
             // 如果没有提供混淆规则文件，则设置默认的混淆规则文件（SDK/tools/proguard/proguard-android.txt）
             pseudoLocalesEnabled true
             minifyEnabled false
+            //是否启用混淆
+//            minifyEnabled true
+            //是否清理无用资源
+//            shrinkResources true
+            //是否启用zipAlign压缩
+//            zipAlignEnabled true
 
             buildConfigField "boolean", "API_ENV", "false"     //测试环境
             buildConfigField "boolean", "LOG_DEBUG", "true"  //打印log
-            signingConfig signingConfigs.debug
+            buildConfigField "String", "PATH",'"/Iface/"'
+            signingConfig signingConfigs.myDebug
         }
     }
 //    viewBinding.enabled = true
@@ -145,4 +163,11 @@ dependencies {
     implementation rootProject.ext.dependencies["GSYVideoPlayer"]
     implementation 'com.youth.banner:banner:2.0.5'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    testImplementation 'junit:junit:4.12'
+    implementation 'io.reactivex.rxjava3:rxkotlin:3.0.1'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.9'
+    implementation group: 'io.netty', name: 'netty-all', version: '4.1.58.Final'
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 }

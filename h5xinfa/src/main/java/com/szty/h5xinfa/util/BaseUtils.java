@@ -24,6 +24,7 @@ import androidx.core.content.FileProvider;
 
 public class BaseUtils {
     private static final String TAG = "BaseUtils";
+
     /**
      * 获取本机ip
      *
@@ -54,46 +55,42 @@ public class BaseUtils {
         }
         return hostIp;
     }
+
     /**
      * 安装apk
      *
      * @param context
      * @param apkPathFile
      */
-    public static void installApk(Context context, File apkPathFile) {
-        try {
-            /**
-             * provider
-             * 处理android 7.0 及以上系统安装异常问题
-             */
-            Intent install = new Intent();
-            install.setAction(Intent.ACTION_VIEW);
-            install.addCategory(Intent.CATEGORY_DEFAULT);
-            install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                //在AndroidManifest中的android:authorities值
-                Uri apkUri = FileProvider.getUriForFile(context, "com.szty.h5xinfa.fileprovider", apkPathFile);
-                //添加这一句表示对目标应用临时授权该Uri所代表的文件
-                Log.d(TAG, "apkUri=" + apkUri); install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                install.setDataAndType(apkUri, "application/vnd.android.package-archive");
-            } else {
-                install.setDataAndType(Uri.fromFile(apkPathFile), "application/vnd.android.package-archive");
-            }
-            context.startActivity(install);
-        } catch (Exception e) {
-            Log.d(TAG, e.getMessage());
-            Log.e(TAG, "installApk: is error",null);
-            if (apkPathFile.exists()) {
-                apkPathFile.delete();
-            }
+    public static void installApk(Context context, File apkPathFile) throws Exception {
+        /**
+         * provider
+         * 处理android 7.0 及以上系统安装异常问题
+         */
+        Intent install = new Intent();
+        install.setAction(Intent.ACTION_VIEW);
+        install.addCategory(Intent.CATEGORY_DEFAULT);
+        install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            //在AndroidManifest中的android:authorities值
+            Uri apkUri = FileProvider.getUriForFile(context, "com.szty.h5xinfa.fileprovider", apkPathFile);
+            //添加这一句表示对目标应用临时授权该Uri所代表的文件
+            Log.d(TAG, "apkUri=" + apkUri);
+            install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            install.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        } else {
+            install.setDataAndType(Uri.fromFile(apkPathFile), "application/vnd.android.package-archive");
         }
+        context.startActivity(install);
     }
 
 
-    /** 删除文件夹以及目录下的文件
-      * @param filePath 被删除目录的文件路径
-      * @return 目录删除成功返回true，否则返回false
-      */
+    /**
+     * 删除文件夹以及目录下的文件
+     *
+     * @param filePath 被删除目录的文件路径
+     * @return 目录删除成功返回true，否则返回false
+     */
 
     public static boolean deleteDirectory(String filePath) {
         boolean flag = false;
@@ -118,21 +115,21 @@ public class BaseUtils {
             } else {
                 //删除子目录
                 flag = deleteDirectory(files[i].getAbsolutePath());
-                if (!flag){
+                if (!flag) {
                     break;
                 }
             }
         }
-        if (!flag){
+        if (!flag) {
             return false;
         }
         //删除当前空目录
         return dirFile.delete();
     }
 
-    public static boolean deleteFile(String str){
+    public static boolean deleteFile(String str) {
         File file = new File(str);
-        if (file.isFile()&&file.exists()) {
+        if (file.isFile() && file.exists()) {
             return file.delete();
         }
         return false;
@@ -140,10 +137,11 @@ public class BaseUtils {
 
 
     /**
-      *  根据路径删除指定的目录或文件，无论存在与否
-      *  @param filePath 要删除的目录或文件
-      *  @return 删除成功返回 true，否则返回 false。
-      */
+     * 根据路径删除指定的目录或文件，无论存在与否
+     *
+     * @param filePath 要删除的目录或文件
+     * @return 删除成功返回 true，否则返回 false。
+     */
     public static boolean deleteFolder(String filePath) {
         File file = new File(filePath);
         if (!file.exists()) {
@@ -159,19 +157,18 @@ public class BaseUtils {
         }
     }
 
- /**
-  * 获取版本号
-  *
-  * @return
-  */
+    /**
+     * 获取版本号
+     *
+     * @return
+     */
     public static String getVersionCode(Activity activity) {
         // 包管理器 可以获取清单文件信息
         PackageManager packageManager = activity.getPackageManager();
         try {
             // 获取包信息
             // 参1 包名 参2 获取额外信息的flag 不需要的话 写0
-            PackageInfo packageInfo = packageManager.getPackageInfo(
-                    activity.getPackageName(), 0);
+            PackageInfo packageInfo = packageManager.getPackageInfo(activity.getPackageName(), 0);
             return packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -213,7 +210,7 @@ public class BaseUtils {
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
             //根据文件路径获取缩略图
-            retriever.setDataSource(context,uri);
+            retriever.setDataSource(context, uri);
             //获得第一帧图片
             bitmap = retriever.getFrameAtTime();
         } catch (IllegalArgumentException e) {
@@ -223,6 +220,7 @@ public class BaseUtils {
         }
         return bitmap;
     }
+
     /**
      * 得到屏幕信息
      * getScreenDisplayMetrics().heightPixels 屏幕高
@@ -241,18 +239,18 @@ public class BaseUtils {
 
     }
 
-    public static int getScreenWidth(Context context){
+    public static int getScreenWidth(Context context) {
         int width = 0;
-        if (context!=null) {
+        if (context != null) {
             DisplayMetrics dm = context.getResources().getDisplayMetrics();
             width = dm.widthPixels;
         }
         return width;
     }
 
-    public static int getScreenHeight(Context context){
+    public static int getScreenHeight(Context context) {
         int height = 0;
-        if (context!=null) {
+        if (context != null) {
             DisplayMetrics dm = context.getResources().getDisplayMetrics();
             height = dm.heightPixels;
         }

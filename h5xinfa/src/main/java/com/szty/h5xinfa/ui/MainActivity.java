@@ -1,9 +1,17 @@
 package com.szty.h5xinfa.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,18 +26,24 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.ads.utillibrary.utils.ToastUtils;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
+import com.szty.h5xinfa.BuildConfig;
 import com.szty.h5xinfa.Constant;
 import com.szty.h5xinfa.DownloadZipDialogManager;
 import com.szty.h5xinfa.IReplaceType;
 import com.szty.h5xinfa.NormalReplaceImpl;
 import com.szty.h5xinfa.R;
-import com.szty.h5xinfa.XmlManager;
+import com.szty.h5xinfa.baoao.ConfigJsonHandler;
+import com.szty.h5xinfa.baoao.DoubleClickListener;
+import com.szty.h5xinfa.baoao.SocketService;
 import com.szty.h5xinfa.model.ConfigBean;
 import com.szty.h5xinfa.model.UpdateBean;
 import com.szty.h5xinfa.model.UpgradeBean;
@@ -37,6 +51,9 @@ import com.szty.h5xinfa.updateResponse.BaseUpdateResponse;
 import com.szty.h5xinfa.updateResponse.NormalUpdateResponseImpl;
 import com.szty.h5xinfa.util.BaseUtils;
 import com.szty.h5xinfa.util.ZipUtil;
+import com.szty.h5xinfa.view.QueueView;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,11 +63,20 @@ import java.net.URISyntaxException;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static com.szty.h5xinfa.baoao.ToolsKt.ACTION_RESULT;
+import static com.szty.h5xinfa.baoao.ToolsKt.KEY_RESULT;
+import static com.szty.h5xinfa.baoao.ToolsKt.REQUEST_CODE;
+import static com.szty.h5xinfa.baoao.ToolsKt.SHOW_QUEUE;
+import static com.szty.h5xinfa.baoao.ToolsKt.SHOW_QUEUE_TIME;
+import static com.szty.h5xinfa.baoao.ToolsKt.getIMEIDeviceId;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -71,8 +97,12 @@ public class MainActivity extends AppCompatActivity {
     private int sendHeartbeatTime;
     //默认发送心跳间隔
     private static final int DEFAULT_HEARTBEAT_TIME = 40 * 1000;
+    private MyReceiver receiver;
+    private QueueView qv;
+    private Button btnLeft, btnRight;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -80,14 +110,71 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         try {
             okHttpClient = new OkHttpClient();
+            initView();
             initData();
             initWebView();
             // ../szty/page/index.html 文件不存在 则加载assets下面的index.html文件
             readLocalH5();
             initIntentData();
+            startService();
+            registerReceiver();
+            addListener();
+            String imei = getIMEIDeviceId(this);
+            Log.i(TAG, "onCreate: imei ... " + imei);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void initView() {
+        qv = findViewById(R.id.qv);
+        btnLeft = findViewById(R.id.btn_left);
+        btnRight = findViewById(R.id.btn_right);
+    }
+
+    private void addListener() {
+        btnLeft.setOnClickListener(new DoubleClickListener() {
+            @Override
+            public void doubleClick(@Nullable View v) {
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
+        btnRight.setOnClickListener(new DoubleClickListener() {
+            @Override
+            public void doubleClick(@Nullable View v) {
+                new MaterialDialog.Builder(MainActivity.this).title(R.string.dialog_title).content(R.string.dialog_exit).positiveText(R.string.dialog_confirm).onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        System.exit(0);
+                    }
+                }).negativeText(R.string.dialog_cancel).show();
+            }
+        });
+    }
+
+    private void registerReceiver() {
+        receiver = new MyReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_RESULT);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+    }
+
+    private void startService() {
+        ServiceConnection sc = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                Log.i(TAG, "onServiceConnected: ");
+                SocketService service = ((SocketService.MyBinder) binder).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                Log.i(TAG, "onServiceDisconnected: ");
+            }
+        };
+        Intent intent = new Intent(MainActivity.this, SocketService.class);
+        bindService(intent, sc, BIND_AUTO_CREATE);
     }
 
     private void initIntentData() {
@@ -101,8 +188,9 @@ public class MainActivity extends AppCompatActivity {
                     ToastUtils.showToast(MainActivity.this, getString(R.string.read_config_file_error));
                     break;
                 case Constant.LOAD_XML_FINISH:
-                    configBean = XmlManager.getInstance().getConfigBean();
-                    break;
+                    //                    configBean = XmlManager.getInstance().getConfigBean();
+                    configBean = ConfigJsonHandler.Companion.getMConfigBean();
+                    //                    break;
                 default:
                     break;
             }
@@ -133,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
             sendHeartbeatTime = DEFAULT_HEARTBEAT_TIME;
         } else {
             try {
-                sendHeartbeatTime = Integer.valueOf(heartTime) * 1000;
+                sendHeartbeatTime = Integer.parseInt(heartTime) * 1000;
             } catch (NumberFormatException e) {
                 e.printStackTrace();
                 sendHeartbeatTime = DEFAULT_HEARTBEAT_TIME;
@@ -180,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initWebView() {
         webView = findViewById(R.id.web_view);
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE,null);
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         /**
          * 如果 app 需要自定义 UA，建议采取在 SDK 默认UA 后追加 app UA 的方式
          * APP_NAME_UA 用户自定义名字
@@ -208,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
          * 注：这里如果重写了WebChromeClient的shouldOverrideUrlLoading方法
          * 在某些Android终端上加载iframe时会出现显示错误
          */
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
@@ -232,13 +320,14 @@ public class MainActivity extends AppCompatActivity {
      * @param baseUpdateResponse
      */
     private void requestUpdate(String url, BaseUpdateResponse baseUpdateResponse) {
+        Log.d(TAG, "requestUpdate() called with: url = [" + url + "]");
         final Request request = new Request.Builder().url(url).get()//默认就是GET请求，可以不写
                 .build();
         Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.i(TAG, "onFailure: ");
+                Log.i(TAG, "requestUpdate onFailure: ");
                 handler.sendEmptyMessageDelayed(Constant.REQUEST_UPGRADE, POLLING_TIME);
             }
 
@@ -276,7 +365,7 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.i(TAG, "onFailure: ");
+                Log.i(TAG, "requestUpgrade onFailure: ");
                 handler.sendEmptyMessageDelayed(Constant.REQUEST_UPDATE, POLLING_TIME);
             }
 
@@ -284,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 //返回格式   id|../../..|length ===》  id|zip路径|zip大小 132|/Upload/edition/InformationDisplay_20191221141046221.zip
                 String responseStr = response.body().string();
-                Log.i(TAG, "requestUpgrade onResponse: " + responseStr);
+                //                Log.i(TAG, "requestUpgrade onResponse: " + responseStr);
                 UpgradeBean upgradeBean = baseUpdateResponse.getUpgradeBean(responseStr);
                 String url = baseUpdateResponse.getUrl(upgradeBean.getFilepath());
                 String id = String.valueOf(upgradeBean.getId());
@@ -308,13 +397,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private void downloadApk(String download, String id) {
         Log.d(TAG, "downloadApk() called with: download = [" + download + "], id = [" + id + "]");
-        String path = getExternalFilesDir(Constant.PATH_SZTY).getAbsolutePath() + File.separator + Constant.PATH_DOWNLOAD;
-        File file = new File(path);
-        if (!file.exists()) {
-            file.mkdirs();
+        File parent = getExternalFilesDir(Constant.PATH_SZTY);
+        if (!parent.exists()) {
+            parent.mkdirs();
+            Log.e(TAG, "downloadApk: download path is not exist", null);
+            handler.sendEmptyMessageDelayed(Constant.REQUEST_UPDATE, POLLING_TIME);
+            return;
         }
-        path = path + File.separator + Constant.APK_NAME;
-        File f = new File(path);
+        File f = new File(parent, Constant.APK_NAME);
+        final String path = f.getAbsolutePath();
         if (f.isFile() && f.exists()) {
             f.delete();
         }
@@ -332,9 +423,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                Log.i(TAG, "downloadApk progress soFarBytes ... " + soFarBytes + "  totalBytes ... " + totalBytes);
+                //                Log.i(TAG, "downloadApk progress soFarBytes ... " + soFarBytes + "  totalBytes ... " + totalBytes);
                 if (downloadZipDialogManager != null) {
-                    Log.i(TAG, "downloadApk progress: dialog show");
+                    //                    Log.i(TAG, "downloadApk progress: dialog show");
                     downloadZipDialogManager.showDialog();
                     int ratio = (int) (((float) soFarBytes / (float) totalBytes) * 100);
                     downloadZipDialogManager.setProgress(ratio);
@@ -356,10 +447,12 @@ public class MainActivity extends AppCompatActivity {
             protected void completed(BaseDownloadTask task) {
                 Log.i(TAG, "downloadApk completed");
                 if (downloadZipDialogManager.isShowing()) {
-                    Log.i(TAG, "downloadApk completed: dialog dismiss");
+                    //                    Log.i(TAG, "downloadApk completed: dialog dismiss");
                     downloadZipDialogManager.dismiss();
                     downloadZipDialogManager = null;
                 }
+                //安装升级文件
+                //                installApk(path);
                 String upgradeEndUrl = getUpgradeEndUrl(id);
                 requestUpgradeEnd(upgradeEndUrl, f);
             }
@@ -371,14 +464,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void error(BaseDownloadTask task, Throwable e) {
-                Log.i(TAG, "error messsage --- " + e.getMessage());
+                Log.i(TAG, "error message --- " + e.getMessage());
                 try {
                     if (downloadZipDialogManager.isShowing()) {
                         downloadZipDialogManager.dismiss();
                     }
                 } catch (Exception e1) {
                     e1.printStackTrace();
-                }finally {
+                } finally {
                     ToastUtils.showToast(MainActivity.this, getString(R.string.download_apk_error));
                     handler.sendEmptyMessageDelayed(Constant.REQUEST_UPDATE, POLLING_TIME);
                 }
@@ -398,6 +491,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.i(TAG, "onFailure: ");
+                handler.sendEmptyMessageDelayed(Constant.REQUEST_UPDATE, POLLING_TIME);
             }
 
             @Override
@@ -405,9 +499,30 @@ public class MainActivity extends AppCompatActivity {
                 String responseStr = response.body().string();
                 Log.i(TAG, "requestUpgradeEnd onResponse: " + responseStr);
                 //发送upgradeEndUrl后开始安装
-                BaseUtils.installApk(MainActivity.this, file);
+                //                BaseUtils.installApk(MainActivity.this, file);
+                Log.i(TAG, "requestUpgradeEnd onResponse: " + file.getAbsolutePath());
+                //                Intent i = new Intent(Intent.ACTION_VIEW);
+                //                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //                i.setDataAndType(Uri.parse("file://"+file.getAbsolutePath()), "application/vnd.android.package-archive");
+                //                startActivity(i);
+                installAPK(file);
             }
         });
+    }
+
+    private void installAPK(File f) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        //安装完成后，启动app
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            //第二个参数要和Mainfest中<provider>内的android:authorities 保持一致
+            Uri uri = FileProvider.getUriForFile(this, this.getPackageName() + ".fileprovider", f);
+            intent.setDataAndType(uri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(f), "application/vnd.android.package-archive");
+        }
+        startActivity(intent);
     }
 
     private void requestUpdateEnd(String url) {
@@ -547,13 +662,8 @@ public class MainActivity extends AppCompatActivity {
                 //解压缩文件到temp
                 ZipUtil.upZipFileByApache(file, unZipPath);
                 Log.i(TAG, "checkZip: end");
-                if (isUpdate) {
-                    //替换更新文件
-                    replaceOldFile();
-                } else {
-                    //安装升级文件
-                    installApk();
-                }
+                //替换更新文件
+                replaceOldFile();
             } else {
                 Log.e(TAG, "checkZip: " + path + " is not exist", null);
                 ToastUtils.showToast(MainActivity.this, getString(R.string.zip_file_is_not_exists));
@@ -567,15 +677,22 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 安装升级文件
      */
-    private void installApk() {
+    private void installApk(String path) {
         Log.i(TAG, "installApk: start install");
-        String unZipPath = getExternalFilesDir(Constant.PATH_SZTY).getAbsolutePath() + File.separator + Constant.PATH_TEMP;
-        File file = new File(unZipPath);
-        if (file.exists() && file.listFiles() != null && file.listFiles().length == 1) {
-            File apkFile = file.listFiles()[0];
+        File file = new File(path);
+        if (file.exists() && file.isFile()) {
             pb.setVisibility(View.GONE);
-            Log.i(TAG, "installApk: apkPath ... " + apkFile.getAbsolutePath());
-            BaseUtils.installApk(MainActivity.this, apkFile);
+            Log.i(TAG, "installApk: apkPath ... " + path);
+            try {
+                BaseUtils.installApk(MainActivity.this, file);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e(TAG, "installApk: is error", null);
+                if (file.exists()) {
+                    file.delete();
+                }
+                handler.sendEmptyMessageDelayed(Constant.REQUEST_UPDATE, POLLING_TIME);
+            }
         } else {
             pb.setVisibility(View.GONE);
             ToastUtils.showToast(MainActivity.this, getString(R.string.install_error));
@@ -600,6 +717,9 @@ public class MainActivity extends AppCompatActivity {
             webView.clearHistory();
             webView.destroy();
             webView = null;
+        }
+        if (receiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         }
         handler.removeCallbacksAndMessages(null);
     }
@@ -673,11 +793,12 @@ public class MainActivity extends AppCompatActivity {
             String ip = configBean.getServerIp();
             String port = configBean.getServerPort();
             String clientIp = BaseUtils.getIP();
-            String updateUrlLocal = configBean.getUpdateUrl();
+            String updateUrlLocal;
+            updateUrlLocal = getResources().getString(R.string.url_update);
             String s;
             s = updateUrlLocal.replace("{0}", configBean.getId());
             s = s.replace("{1}", clientIp);
-            url = Constant.HTTP_CODE + ip + ":" + port + s;
+            url = Constant.HTTP_CODE + ip + ":" + port + BuildConfig.PATH + s;
         } else {
             Log.e(TAG, "getUpdateUrl: configBean is null", null);
         }
@@ -690,12 +811,12 @@ public class MainActivity extends AppCompatActivity {
             String ip = configBean.getServerIp();
             String port = configBean.getServerPort();
             String clientIp = BaseUtils.getIP();
-            String upgradeUrlLocal = configBean.getUpgradeUrl();
+            String upgradeUrlLocal;
+            upgradeUrlLocal = getResources().getString(R.string.url_upgrade);
             String s;
             s = upgradeUrlLocal.replace("{0}", configBean.getId());
             s = s.replace("{1}", clientIp);
-            s = s.replace("{2}", configBean.getVersionNumber());
-            url = Constant.HTTP_CODE + ip + ":" + port + s;
+            url = Constant.HTTP_CODE + ip + ":" + port + BuildConfig.PATH + s;
         } else {
             Log.e(TAG, "getUpdateUrl: configBean is null", null);
         }
@@ -712,14 +833,10 @@ public class MainActivity extends AppCompatActivity {
         if (configBean != null) {
             String ip = configBean.getServerIp();
             String port = configBean.getServerPort();
-            String clientIp = BaseUtils.getIP();
-            String upgradeUrlLocal = configBean.getUpgradeEndUrl();
+            String upgradeUrlLocal = getResources().getString(R.string.url_upgrade_end);
             String s;
-            s = upgradeUrlLocal.replace("{0}", configBean.getId());
-            s = s.replace("{1}", clientIp);
-            s = s.replace("{2}", configBean.getVersionNumber());
-            s = s.replace("{3}", id);
-            url = Constant.HTTP_CODE + ip + ":" + port + s;
+            s = upgradeUrlLocal.replace("{0}", id);
+            url = Constant.HTTP_CODE + ip + ":" + port + BuildConfig.PATH + s;
         } else {
             Log.e(TAG, "getUpdateUrl: configBean is null", null);
         }
@@ -736,13 +853,9 @@ public class MainActivity extends AppCompatActivity {
         if (configBean != null) {
             String ip = configBean.getServerIp();
             String port = configBean.getServerPort();
-            String clientIp = BaseUtils.getIP();
-            String updateUrlLocal = configBean.getUpdateEndUrl();
-            String s;
-            s = updateUrlLocal.replace("{0}", configBean.getId());
-            s = s.replace("{1}", clientIp);
-            s = s.replace("{2}", id);
-            url = Constant.HTTP_CODE + ip + ":" + port + s;
+            String updateUrlLocal = getResources().getString(R.string.url_update_end);
+            String s = updateUrlLocal.replace("{0}", id);
+            url = Constant.HTTP_CODE + ip + ":" + port + BuildConfig.PATH + s;
         } else {
             Log.e(TAG, "getUpdateUrl: configBean is null", null);
         }
@@ -759,13 +872,13 @@ public class MainActivity extends AppCompatActivity {
         if (configBean != null) {
             String ip = configBean.getServerIp();
             String port = configBean.getServerPort();
-            String localHeartbeatUrl = configBean.getHeartUrl();
+            String localHeartbeatUrl = getResources().getString(R.string.url_heart);
             String clientIp = BaseUtils.getIP();
             String id = configBean.getId();
             String s;
             s = localHeartbeatUrl.replace("{0}", id);
             s = s.replace("{1}", clientIp);
-            url = Constant.HTTP_CODE + ip + ":" + port + s;
+            url = Constant.HTTP_CODE + ip + ":" + port + BuildConfig.PATH + s;
         } else {
             Log.e(TAG, "getSendHeartbeatUrl: configBean is null", null);
         }
@@ -817,6 +930,8 @@ public class MainActivity extends AppCompatActivity {
                     mainActivity.requestUpdate(mainActivity.getUpdateUrl(), mainActivity.baseUpdateResponse);
                 } else if (msg.what == Constant.SEND_HEARTBEAT) {
                     mainActivity.sendHeartBeat();
+                } else if (msg.what == SHOW_QUEUE) {
+                    mainActivity.qv.setVisibility(View.GONE);
                 }
             }
         }
@@ -848,28 +963,61 @@ public class MainActivity extends AppCompatActivity {
 
 
     private long firstTime = 0;
-    public static final int PRESS_BACK_BUTTON_INTERVAL = 2*1000;
+    public static final int PRESS_BACK_BUTTON_INTERVAL = 2 * 1000;
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         // TODO: 2020-03-18 由于已经有onKeyDown方法   这里先不执行“再按一次退出程序”操作  
-//        switch (keyCode) {
-//            case KeyEvent.KEYCODE_BACK:
-//                long secondTime = System.currentTimeMillis();
-//                if (secondTime - firstTime > PRESS_BACK_BUTTON_INTERVAL) {                                         //如果两次按键时间间隔大于2秒，则不退出
-//                    Toast.makeText(this, R.string.press_again_exit, Toast.LENGTH_SHORT).show();
-//                    firstTime = secondTime;//更新firstTime
-//                    return true;
-//                } else {
-//                    //两次按键小于2秒时，退出应用
-//                    System.exit(0);
-//                }
-//                break;
-//        }
+        //        switch (keyCode) {
+        //            case KeyEvent.KEYCODE_BACK:
+        //                long secondTime = System.currentTimeMillis();
+        //                if (secondTime - firstTime > PRESS_BACK_BUTTON_INTERVAL) {                                         //如果两次按键时间间隔大于2秒，则不退出
+        //                    Toast.makeText(this, R.string.press_again_exit, Toast.LENGTH_SHORT).show();
+        //                    firstTime = secondTime;//更新firstTime
+        //                    return true;
+        //                } else {
+        //                    //两次按键小于2秒时，退出应用
+        //                    System.exit(0);
+        //                }
+        //                break;
+        //        }
         return super.onKeyUp(keyCode, event);
     }
 
     @Override
     public void setRequestedOrientation(int requestedOrientation) {
         return;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            qv.requestLayout();
+        }
+        Log.i(TAG, "onActivityResult: requestCode ... " + requestCode + " resultCode ... " + resultCode);
+    }
+
+    static class MyReceiver extends BroadcastReceiver {
+        private WeakReference wr;
+
+        public MyReceiver(MainActivity a) {
+            wr = new WeakReference(a);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && intent.hasExtra(KEY_RESULT)) {
+                String result = intent.getStringExtra(KEY_RESULT);
+                if (wr.get() != null) {
+                    MainActivity a = ((MainActivity) wr.get());
+                    a.qv.setVisibility(View.VISIBLE);
+                    a.handler.removeMessages(SHOW_QUEUE);
+                    a.qv.setContent(result);
+                    a.handler.sendEmptyMessageDelayed(SHOW_QUEUE, SHOW_QUEUE_TIME);
+                }
+            }
+        }
     }
 }

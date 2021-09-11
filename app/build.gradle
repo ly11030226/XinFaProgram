@@ -124,6 +124,9 @@ dependencies {
         resolutionStrategy.force rootProject.ext.dependencies["appcompat"]
     }
     implementation rootProject.ext.dependencies["appcompat"]
+    testImplementation 'junit:junit:4.12'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.8'
     implementation project(':remote')
     implementation project(':utillibrary')
     implementation rootProject.ext.dependencies["permissionsdispatcher"]

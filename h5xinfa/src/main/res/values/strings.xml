@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">H5XinFa</string>
+    <string name="app_name">排队机叫号客户端</string>
 
     <string name="dialog_title">提示</string>
     <string name="dialog_commit">确定</string>
@@ -22,4 +22,23 @@
     <string name="zip_file_is_not_exists">压缩文件不存在</string>
     <string name="install_error">安装失败</string>
     <string name="press_again_exit">再按一次退出程序</string>
+
+    <string name="server_ip">服务器IP</string>
+    <string name="server_port">服务器端口号</string>
+    <string name="window_number">屛地址</string>
+    <string name="text_size">字体大小</string>
+    <string name="btn_save">保存</string>
+    <string name="reset_default">回复默认值</string>
+    <string name="dialog_exit">确定退出应用吗？</string>
+    <string name="text_color">字体颜色(格式：255,255,255) 取值0~255</string>
+    <string name="first_color">第一行背景颜色(格式：255,255,255)</string>
+    <string name="second_color">第二行背景颜色</string>
+    <string name="third_color">第三行背景颜色</string>
+    <string name="forth_color">第四行背景颜色</string>
+
+    <string name="url_update">update_judge.aspx?id={0}&#038;ip={1}</string>
+    <string name="url_upgrade">upgrade_judge.aspx?id={0}&#038;ip={1}</string>
+    <string name="url_update_end">update_finish.aspx?finishId={0}</string>
+    <string name="url_upgrade_end">upgrade_finish.aspx?finishId={0}</string>
+    <string name="url_heart">heart_beat.aspx?id={0}&#038;ip={1}</string>
 </resources>
