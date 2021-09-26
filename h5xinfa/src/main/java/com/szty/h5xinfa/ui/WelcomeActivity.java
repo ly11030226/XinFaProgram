@@ -4,17 +4,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.shuyu.gsyvideoplayer.player.IjkPlayerManager;
 import com.shuyu.gsyvideoplayer.player.PlayerFactory;
@@ -28,7 +25,6 @@ import com.szty.h5xinfa.util.BaseUtils;
 import java.io.File;
 import java.lang.ref.WeakReference;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -91,7 +87,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void requestPermissions() {
-        WelcomeActivityPermissionsDispatcher.checkPermissionWithPermissionCheck(this);
+//        WelcomeActivityPermissionsDispatcher.checkPermissionWithPermissionCheck(this);
     }
 
 
@@ -154,8 +150,8 @@ public class WelcomeActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-//                            XmlManager.getInstance().loadXmlData(handler, WelcomeActivity.this);
-                            ConfigJsonHandler.Companion.get().readConfig(handler,WelcomeActivity.this);
+                            //                            XmlManager.getInstance().loadXmlData(handler, WelcomeActivity.this);
+                            ConfigJsonHandler.Companion.get().readConfig(handler, WelcomeActivity.this);
                         } catch (Exception e) {
                             e.printStackTrace();
                             handler.sendEmptyMessage(Constant.LOAD_XML_ERROR);
@@ -179,20 +175,20 @@ public class WelcomeActivity extends AppCompatActivity {
     @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE})
     void noPermission(PermissionRequest request) {
         Log.i(TAG, "noPermission");
-        if (noPermissionDialog == null) {
-            noPermissionDialog = new MaterialDialog.Builder(this).title(R.string.dialog_title).content(R.string.res_no_permission).positiveText(R.string.dialog_commit).onPositive(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                    request.proceed();
-                }
-            }).negativeText(R.string.dialog_cancel).onNegative(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                    request.cancel();
-                }
-            }).build();
-        }
-        noPermissionDialog.show();
+//        if (noPermissionDialog == null) {
+//            noPermissionDialog = new MaterialDialog.Builder(this).title(R.string.dialog_title).content(R.string.res_no_permission).positiveText(R.string.dialog_commit).onPositive(new MaterialDialog.SingleButtonCallback() {
+//                @Override
+//                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+//                    request.proceed();
+//                }
+//            }).negativeText(R.string.dialog_cancel).onNegative(new MaterialDialog.SingleButtonCallback() {
+//                @Override
+//                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+//                    request.cancel();
+//                }
+//            }).build();
+//        }
+//        noPermissionDialog.show();
     }
 
     @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE})
@@ -203,32 +199,28 @@ public class WelcomeActivity extends AppCompatActivity {
     @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE})
     void rejectAndNOAsk() {
         Log.i(TAG, "rejectAndNOAsk");
-        if (noAskDialog == null) {
-            noAskDialog = new MaterialDialog.Builder(this).title(R.string.dialog_title).content(R.string.res_no_permission).positiveText(R.string.dialog_confirm).onPositive(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                    Intent intent = new Intent();
-                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    Uri uri = Uri.fromParts("package", WelcomeActivity.this.getPackageName(), null);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setData(uri);
-                    startActivity(intent);
-                }
-            }).negativeText(R.string.dialog_do_not).onNegative(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
-                    noAskDialog.dismiss();
-                }
-            }).build();
-        }
-        noAskDialog.show();
+//        if (noAskDialog == null) {
+//            noAskDialog = new MaterialDialog.Builder(this).title(R.string.dialog_title).content(R.string.res_no_permission).positiveText(R.string.dialog_confirm).onPositive(new MaterialDialog.SingleButtonCallback() {
+//                @Override
+//                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+//                    Intent intent = new Intent();
+//                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                    Uri uri = Uri.fromParts("package", WelcomeActivity.this.getPackageName(), null);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    intent.setData(uri);
+//                    startActivity(intent);
+//                }
+//            }).negativeText(R.string.dialog_do_not).onNegative(new MaterialDialog.SingleButtonCallback() {
+//                @Override
+//                public void onClick(@androidx.annotation.NonNull MaterialDialog dialog, @androidx.annotation.NonNull DialogAction which) {
+//                    noAskDialog.dismiss();
+//                }
+//            }).build();
+//        }
+//        noAskDialog.show();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        WelcomeActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
+
 
     ////////////////////////////权限相关///////////////////////////////////
     //////////////////////////////////////////////////////////////////////
@@ -238,4 +230,9 @@ public class WelcomeActivity extends AppCompatActivity {
         return;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: ");
+    }
 }

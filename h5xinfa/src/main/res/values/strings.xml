@@ -9,7 +9,20 @@
     <string name="dialog_do_not">不开通</string>
     <string name="dialog_confirm">确认</string>
     <string name="res_is_empty">展示端还没有任何显示内容，请添加新的资源</string>
-    <string name="res_no_permission">请设置允许开通【存储】和【使用相机】权限,否则无法添加新资源</string>
+    <string name="res_no_permission">请设置允许开通【存储】权限,否则软件无法运行</string>
+
+    <string name="dialog_device_id">读取设备指纹</string>
+    <string name="dialog_code_isnull">验证码不能为空</string>
+    <string name="dialog_jump">马上跳转页面 … </string>
+    <string name="dialog_input_again">重新读取文件</string>
+    <string name="code_file_is_error">验证码错误</string>
+    <string name="deviceid_is_error">设备指纹获取有误</string>
+    <string name="dialog_setting">设置</string>
+    <string name="dialog_show_button">显示测试按钮</string>
+    <string name="dialog_yes">确定</string>
+    <string name="dialog_code_path">请将验证码文件code.txt放到【根目录/Android/data/com.szty.h5xinfa/files】下面</string>
+    <string name="exit_app">退出应用</string>
+
 
     <string name="config_file_not_exist">配置文件不存在</string>
     <string name="read_config_file_error">读取配置文件出错</string>
@@ -41,4 +54,7 @@
     <string name="url_update_end">update_finish.aspx?finishId={0}</string>
     <string name="url_upgrade_end">upgrade_finish.aspx?finishId={0}</string>
     <string name="url_heart">heart_beat.aspx?id={0}&#038;ip={1}</string>
+
+    <string name="get_device_id">获取设备指纹</string>
+    <string name="pre_str">sztiye_</string>
 </resources>

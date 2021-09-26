@@ -9,4 +9,5 @@
     <color name="iv_bg">#AFFFFFFF</color>
 
     <color name="transparent">#00FFFFFF</color>
+    <color name="code_text_bg">#30000000</color>
 </resources>

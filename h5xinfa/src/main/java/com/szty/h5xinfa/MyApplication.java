@@ -1,5 +1,8 @@
 package com.szty.h5xinfa;
 
+import com.szty.h5xinfa.baoao.L;
+import com.szty.h5xinfa.baoao.Utils;
+
 import androidx.multidex.MultiDexApplication;
 
 public class MyApplication extends MultiDexApplication {
@@ -10,6 +13,8 @@ public class MyApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        Utils.init(this);
+        L.getConfig().setGlobalTag("baoao");
         //搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
         //        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
         //
@@ -28,7 +33,6 @@ public class MyApplication extends MultiDexApplication {
         //
         //            @Override
         //            public void onCoreInitFinished() {
-        //                // TODO Auto-generated method stub
         //            }
         //        };
         //        //x5内核初始化接口

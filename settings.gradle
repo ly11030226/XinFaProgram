@@ -1,1 +1,2 @@
+include ':h5xinfakey'
 include ':app',':remote', ':clientconnection', ':utillibrary', ':xinfafristversion', ':h5xinfa','multi-image-selector_button_press'

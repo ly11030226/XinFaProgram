@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">H5信发验证码生成器</string>
+
+    <string name="input_device_id">请输入设备指纹</string>
+    <string name="create_code">生成验证码</string>
+    <string name="save">保存到文件</string>
+    <string name="exit">退出</string>
+    <string name="save_path">code.txt已保存到【根目录/Android/data/com.szty.h5xinfakey/files】下面</string>
+
+    <string name="dialog_request_permission">请开通【存储】权限，否则应用无法启动</string>
+    <string name="dialog_confirm">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_remind">提示</string>
+    <string name="dialog_do">去开通</string>
+</resources>

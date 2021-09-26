@@ -30,7 +30,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.ads.utillibrary.utils.ToastUtils;
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -76,7 +75,6 @@ import static com.szty.h5xinfa.baoao.ToolsKt.KEY_RESULT;
 import static com.szty.h5xinfa.baoao.ToolsKt.REQUEST_CODE;
 import static com.szty.h5xinfa.baoao.ToolsKt.SHOW_QUEUE;
 import static com.szty.h5xinfa.baoao.ToolsKt.SHOW_QUEUE_TIME;
-import static com.szty.h5xinfa.baoao.ToolsKt.getIMEIDeviceId;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -119,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
             startService();
             registerReceiver();
             addListener();
-            String imei = getIMEIDeviceId(this);
-            Log.i(TAG, "onCreate: imei ... " + imei);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -143,12 +139,17 @@ public class MainActivity extends AppCompatActivity {
         btnRight.setOnClickListener(new DoubleClickListener() {
             @Override
             public void doubleClick(@Nullable View v) {
-                new MaterialDialog.Builder(MainActivity.this).title(R.string.dialog_title).content(R.string.dialog_exit).positiveText(R.string.dialog_confirm).onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        System.exit(0);
-                    }
-                }).negativeText(R.string.dialog_cancel).show();
+                MaterialDialog md = new MaterialDialog(MainActivity.this, MaterialDialog.getDEFAULT_BEHAVIOR());
+                md.setTitle(R.string.dialog_title);
+                md.message(R.string.dialog_exit, null, null);
+                md.positiveButton(R.string.dialog_commit, null, materialDialog -> {
+                    System.exit(0);
+                    return null;
+                });
+                md.negativeButton(R.string.dialog_cancel,null,materialDialog -> {
+                    return null;
+                });
+                md.show();
             }
         });
     }
@@ -996,7 +997,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             qv.requestLayout();
         }
-        Log.i(TAG, "onActivityResult: requestCode ... " + requestCode + " resultCode ... " + resultCode);
     }
 
     static class MyReceiver extends BroadcastReceiver {

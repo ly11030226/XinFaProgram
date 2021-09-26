@@ -1,17 +1,27 @@
 package com.szty.h5xinfa.baoao
 
-import android.Manifest
 import android.Manifest.permission.READ_PHONE_STATE
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
+import android.text.TextUtils
 import android.util.Log
+import android.widget.Toast
+import com.afollestad.materialdialogs.MaterialDialog
+import com.szty.h5xinfa.R
+import com.szty.h5xinfa.ui.CodeActivity
+import com.szty.h5xinfa.ui.MainActivity
+import java.io.File
 import java.lang.Exception
+import java.nio.charset.Charset
 
 
 const val TYPE_JPG = "bg.jpg"
@@ -47,8 +57,10 @@ const val SHOW_QUEUE_TIME = 5 * 60 * 1000
 const val SHOW_QUEUE = 0x33
 const val REQUEST_CODE = 0x55
 const val FILE_CONFIG_JSON = "ConfigJson.txt"
-
-
+const val RESULT_CODE_EXIT = 0x88
+const val FILE_CODE = "code.txt"
+var identifyStr: String? = null
+const val SZTY = "_"
 
 fun transformColor(rgbStr: String): Int {
     return if (rgbStr.contains(",")) {
@@ -93,6 +105,7 @@ fun getIMEIDeviceId(context: Context): String? {
         }
         assert(mTelephony != null) {
             throw Exception("TelephonyManager is null")
+            L.e("TelephonyManager is null")
         }
         if (mTelephony.deviceId != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -106,3 +119,5 @@ fun getIMEIDeviceId(context: Context): String? {
     }
     return deviceId
 }
+
+

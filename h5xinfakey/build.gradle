@@ -1,0 +1,136 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+
+def releaseTime() {
+    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("GMT+8"))
+}
+
+android {
+
+    signingConfigs {
+        release {
+            keyAlias project.KS_ALIAS
+            keyPassword project.KS_PASSWORD
+            storeFile file(KS_FILE_PATH)
+            storePassword project.KS_STORE_PASSWORD
+        }
+        myDebug {
+            keyAlias project.KS_ALIAS
+            keyPassword project.KS_PASSWORD
+            storeFile file(KS_FILE_PATH)
+            storePassword project.KS_STORE_PASSWORD
+        }
+    }
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.szty.h5xinfakey"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+
+        //添加如下配置就OK了
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath = true
+            }
+        }
+        ndk {
+
+            //APP的build.gradle设置支持的SO库架构
+
+            abiFilters 'armeabi', 'armeabi-v7a', 'x86'
+        }
+
+        aaptOptions {
+            cruncherEnabled = false
+            useNewCruncher = false
+        }
+        dexOptions {
+            javaMaxHeapSize "4g"
+            //Bugly 热更新 推荐
+            jumboMode = true
+        }
+        //程序在buid的时候，会执行lint检查，有任何的错误或者警告提示，都会终止构建，我们可以将其关掉
+        lintOptions {
+            checkReleaseBuilds false
+            abortOnError false //不在error情况下中断
+            disable 'MissingTranslation' //无视字符串缺少本地化的情况
+            disable 'ExtraTranslation'//无视多做了本地化的字符串
+        }
+        //这里是配置JNI的引用地址，也就是引用.so文件
+        sourceSets {
+            main { jni.srcDirs = [] }
+        }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+    }
+
+    buildTypes {
+        release {
+            //是否启用混淆
+            minifyEnabled true
+            //是否清理无用资源
+            shrinkResources true
+            //是否启用zipAlign压缩
+            zipAlignEnabled true
+
+            buildConfigField "boolean", "API_ENV", "true"     //正式环境
+            buildConfigField "boolean", "LOG_DEBUG", "false"  //不打印log
+            signingConfig signingConfigs.release   //签名
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            zipAlignEnabled false
+            // 如果没有提供混淆规则文件，则设置默认的混淆规则文件（SDK/tools/proguard/proguard-android.txt）
+            pseudoLocalesEnabled true
+
+            buildConfigField "boolean", "API_ENV", "false"     //测试环境
+            buildConfigField "boolean", "LOG_DEBUG", "true"  //打印log
+            signingConfig signingConfigs.myDebug
+        }
+    }
+
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                //在这里修改apk文件名
+                outputFileName = "XinFaKey_${variant.name}_v${variant.versionName}_${releaseTime()}.apk"
+            }
+    }
+}
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'org.permissionsdispatcher:permissionsdispatcher:4.7.0'
+    kapt 'org.permissionsdispatcher:permissionsdispatcher-processor:4.7.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.afollestad.material-dialogs:core:3.3.0'
+
+}
